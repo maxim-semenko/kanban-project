@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Entity;
@@ -32,26 +33,27 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
+@ToString
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 2, max = 128)
     @NotBlank
+    @Size(min = 2, max = 128)
     private String name;
 
-    @Size(min = 2, max = 1024)
     @NotBlank
+    @Size(min = 2, max = 1024)
     private String description;
 
     @NotNull
     @CreatedDate
     private Date createdDate;
 
-    @Size(min = 2, max = 50)
     @NotBlank
+    @Size(min = 2, max = 50)
     private String priority;
 
     @ManyToOne
@@ -75,6 +77,7 @@ public class Task {
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     @JsonIgnore
+    @ToString.Exclude
     private List<User> executors = new ArrayList<>();
 
 }

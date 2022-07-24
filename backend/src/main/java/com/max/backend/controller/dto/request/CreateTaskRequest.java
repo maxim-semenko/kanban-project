@@ -31,5 +31,5 @@ public class CreateTaskRequest {
 
     private List<Tag> tags = new ArrayList<>();
 
-    private List<User> executors = new ArrayList<>();
+    private List<Long> executorsId = new ArrayList<>();
 }

@@ -15,9 +15,12 @@ const initialState = {
 const projectReducers = (state = initialState, action = {}) => {
     switch (action.type) {
         case types.GET_PROJECTS_BY_USER_ID:
+            console.log(action.payload.content)
             return {
                 ...state,
-                projects: action.payload.content,
+                projects: action.payload.pageable.pageNumber === 0 ?
+                    action.payload.content :
+                    state.projects.concat(action.payload.content),
                 totalElements: action.payload.totalElements,
                 totalPages: action.payload.totalPages,
                 numberOfElements: action.payload.numberOfElements,
@@ -38,6 +41,7 @@ const projectReducers = (state = initialState, action = {}) => {
                 projects: updatedProjects,
             }
         case types.SET_CURRENT_PAGE_PROJECTS:
+            console.log("SET_CURRENT_PAGE_PROJECTS")
             return {
                 ...state,
                 currentPage: action.payload

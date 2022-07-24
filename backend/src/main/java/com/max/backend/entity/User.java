@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Column;
@@ -35,6 +36,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
+@ToString
 public class User extends BaseEntity {
 
     @Id
@@ -42,8 +44,8 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(unique = true)
-    @Size(min = 7, max = 50)
     @NotBlank
+    @Size(min = 7, max = 50)
     @Email
     private String email;
 
@@ -52,14 +54,16 @@ public class User extends BaseEntity {
     @JsonIgnore
     private String password;
 
+    @NotBlank
     @Size(min = 2, max = 50)
     private String firstname;
 
+    @NotBlank
     @Size(min = 2, max = 50)
     private String lastname;
 
-    @Size(min = 2, max = 50)
     @NotBlank
+    @Size(min = 2, max = 50)
     private String speciality;
 
     @NotNull
@@ -76,23 +80,12 @@ public class User extends BaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "role_id")}
     )
     @JsonIgnore
+    @ToString.Exclude
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany(mappedBy="members")
+    @ManyToMany(mappedBy = "members")
     @JsonIgnore
+    @ToString.Exclude
     private List<Project> projects = new ArrayList<>();
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", speciality='" + speciality + '\'' +
-                ", createdDate=" + createdDate +
-                ", isAccountNonLocked=" + isAccountNonLocked +
-                '}';
-    }
 }

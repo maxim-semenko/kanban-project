@@ -7,7 +7,7 @@ class UserValidator {
             error = 'firstname cannot be empty!';
         } else if (firstname.length < 2) {
             error = 'firstname is too short!';
-        } else if (firstname.length > 30) {
+        } else if (firstname.length > 50) {
             error = 'firstname is too long!';
         }
         return error
@@ -20,21 +20,21 @@ class UserValidator {
             error = 'lastname cannot be empty!';
         } else if (lastname.length < 2) {
             error = 'lastname is too short!';
-        } else if (lastname.length > 30) {
+        } else if (lastname.length > 50) {
             error = 'lastname is too long!';
         }
         return error
     }
 
-    // Username errors
-    validateUsername(username) {
+    // speciality errors
+    validateSpeciality(speciality) {
         let error = "";
-        if (!username || username === '') {
-            error = 'username cannot be empty!';
-        } else if (username.length < 2) {
-            error = 'username is too short!';
-        } else if (username.length > 30) {
-            error = 'username is too long!';
+        if (!speciality || speciality === '') {
+            error = 'speciality cannot be empty!';
+        } else if (speciality.length < 2) {
+            error = 'speciality is too short!';
+        } else if (speciality.length > 50) {
+            error = 'speciality is too long!';
         }
         return error
     }
@@ -46,7 +46,7 @@ class UserValidator {
             error = 'email cannot be empty!';
         } else if (email.length < 4) {
             error = 'email is too short!';
-        } else if (email.length > 40) {
+        } else if (email.length > 50) {
             error = 'email is too long!';
         }
         return error
@@ -65,44 +65,32 @@ class UserValidator {
         return error
     }
 
-    // About errors
-    validateAbout(about) {
-        let error = "";
-        if (about || about !== '') {
-            if (about.length < 2) {
-                error = 'about is too short!';
-            } else if (about.length > 256) {
-                error = 'about is too long!';
-            }
-            return error
-        }
-    }
 
-    validateAllWithoutPassword(firstname, lastname, username, email) {
+    validateAllWithoutPassword(firstname, lastname, speciality, email) {
         let firstnameError = this.validateFirstname(firstname)
         let lastnameError = this.validateLastname(lastname)
-        let usernameError = this.validateUsername(username)
+        let specialityError = this.validateSpeciality(speciality)
         let emailError = this.validateEmail(email)
 
         return {
             firstnameError,
             lastnameError,
-            usernameError,
+            specialityError,
             emailError
         }
     }
 
-    validateAllForSignUp(firstname, lastname, username, email, password) {
+    validateAllForSignUp(firstname, lastname, speciality, email, password) {
         let firstnameError = this.validateFirstname(firstname)
         let lastnameError = this.validateLastname(lastname)
-        let usernameError = this.validateUsername(username)
+        let specialityError = this.validateSpeciality(speciality)
         let emailError = this.validateEmail(email)
         let passwordError = this.validatePassword(password)
 
         return {
             firstnameError,
             lastnameError,
-            usernameError,
+            specialityError,
             emailError,
             passwordError
         }
@@ -118,17 +106,17 @@ class UserValidator {
         }
     }
 
-    validateForEditUser(firstname, lastname, email, about) {
+    validateForEditUser(firstname, lastname, email, speciality) {
         let firstnameError = this.validateFirstname(firstname)
         let lastnameError = this.validateLastname(lastname)
         let emailError = this.validateEmail(email)
-        let aboutError = this.validateAbout(about)
+        let specialityError = this.validateSpeciality(speciality)
 
         return {
             firstnameError,
             lastnameError,
             emailError,
-            aboutError
+            specialityError
         }
     }
 

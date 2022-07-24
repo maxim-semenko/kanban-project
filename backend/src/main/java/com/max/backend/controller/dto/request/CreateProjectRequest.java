@@ -1,6 +1,5 @@
 package com.max.backend.controller.dto.request;
 
-import com.max.backend.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,8 +23,13 @@ public class CreateProjectRequest {
 
     @NotNull
     private Long creatorId;
-    private List<User> members = new ArrayList<>();
+
+    @Size(min = 1, max = 50)
+    private List<Long> membersId = new ArrayList<>();
+
     private List<String> tags = new ArrayList<>();
+
+    @Size(min = 1, max = 10)
     private List<String> projectStatuses = new ArrayList<>();
 
 }

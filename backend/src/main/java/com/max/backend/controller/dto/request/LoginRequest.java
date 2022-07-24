@@ -12,10 +12,6 @@ import javax.validation.constraints.Size;
 @ToString
 public class LoginRequest {
 
-//    @NotBlank(message = "Username must be not blank!")
-//    @Size(min = 2, max = 30, message = "Username size must be between 2 and 30!")
-//    private String username;
-
     @NotBlank(message = "Email must be not blank!")
     @Size(min = 2, max = 30, message = "Email size must be between 2 and 30!")
     private String email;
