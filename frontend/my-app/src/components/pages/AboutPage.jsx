@@ -2,8 +2,8 @@ import React from 'react'
 import {Col, Container, Row} from "react-bootstrap"
 import NavigationBar from "../../components/common/NavigationBar"
 import Footer from "../../components/common/Footer"
-import springLogo from "../../../src/img/spring.png"
-import reactLogo from "../../../src/img/react.png"
+import springLogo from "../../image/spring.png"
+import reactLogo from "../../image/react.png"
 
 function AboutPage() {
 

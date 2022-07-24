@@ -1,5 +1,6 @@
 package com.max.backend.controller.dto.request;
 
+import com.max.backend.entity.Tag;
 import com.max.backend.entity.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,20 +13,23 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CreateProjectRequest {
-
+public class CreateTaskRequest {
     @Size(min = 2, max = 128)
     @NotBlank
     private String name;
 
-    @Size(min = 2, max = 2048)
+    @Size(min = 2, max = 1024)
     @NotBlank
     private String description;
 
-    @NotNull
-    private Long creatorId;
-    private List<User> members = new ArrayList<>();
-    private List<String> tags = new ArrayList<>();
-    private List<String> projectStatuses = new ArrayList<>();
+    @Size(min = 2, max = 50)
+    @NotBlank
+    private String priority;
 
+    @NotNull
+    private Long projectId;
+
+    private List<Tag> tags = new ArrayList<>();
+
+    private List<User> executors = new ArrayList<>();
 }

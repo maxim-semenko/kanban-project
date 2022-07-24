@@ -1,13 +1,14 @@
 import React, {useContext, useEffect, useState} from "react";
 import {BoardContext} from "./Board";
 import Lane from "./Lane";
+import {Card, CardHeader} from "@mui/material";
 
 function BoardLanes(props) {
     const {onDragOverHandler, onDropHandler} = useContext(BoardContext);
     const [divWidth, setDivWidth] = useState(0);
 
     useEffect(() => {
-        setDivWidth(props.stages.length * 285 + props.stages.length * 17);
+        setDivWidth(props.stages.length * 285 + props.stages.length * 16);
     }, []);
 
     return (
@@ -16,10 +17,12 @@ function BoardLanes(props) {
                 {props.stages.map((stage, index) => (
                     <>
                         <div className="card-column" key={index}>
-                            <div className="card bg-light">
-                                <div className="card-header stage-header">
-                                    <h6 className="card-title text-uppercase text-truncate py-2">{stage.name}</h6>
-                                </div>
+                            <Card>
+                                <CardHeader
+                                    title={<h5><b>{stage.name}</b></h5>}
+                                    style={{textTransform: "uppercase", textOverflow: "ellipsis"}}
+                                    className={"stage-header"}
+                                />
                                 <div
                                     className="card-body"
                                     onDrop={(event) => onDropHandler(event, stage.id)}
@@ -27,7 +30,7 @@ function BoardLanes(props) {
                                 >
                                     <Lane stage={stage} key={stage.id}/>
                                 </div>
-                            </div>
+                            </Card>
                         </div>
                     </>
                 ))}

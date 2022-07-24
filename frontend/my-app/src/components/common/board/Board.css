@@ -34,6 +34,7 @@
 
 .card-column {
     float: left;
+    padding-left: 1px;
     margin-left: 13px;
     width: 290px;
     margin-bottom: 20px;

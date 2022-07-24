@@ -8,9 +8,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class RegisterRequest {
-    private String username;
-    private String password;
     private String email;
+    private String password;
     private String firstname;
     private String lastname;
     private String speciality;

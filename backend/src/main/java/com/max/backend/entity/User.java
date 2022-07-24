@@ -47,11 +47,6 @@ public class User extends BaseEntity {
     @Email
     private String email;
 
-    @Column(unique = true)
-    @Size(min = 2, max = 50)
-    @NotBlank
-    private String username;
-
     @NotBlank
     @Size(min = 8, max = 256)
     @JsonIgnore

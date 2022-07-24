@@ -40,11 +40,11 @@ public class Project extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 2, max = 256)
+    @Size(min = 2, max = 128)
     @NotBlank
     private String name;
 
-    @Size(min = 2, max = 1024)
+    @Size(min = 2, max = 2048)
     @NotBlank
     private String description;
 

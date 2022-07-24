@@ -10,11 +10,11 @@ function SignInModal(props) {
     const cookies = new Cookies()
 
     // Values
-    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     // Values errors
-    const [usernameError, setUsernameError] = useState('')
+    const [emailError, setEmailError] = useState('')
     const [passwordError, setPasswordError] = useState('')
 
     // Global error of Sign in
@@ -27,8 +27,8 @@ function SignInModal(props) {
      * @param event input event
      */
     const changeEmailHandler = (event) => {
-        setUsernameError('')
-        setUsername(event.target.value)
+        setEmailError('')
+        setEmail(event.target.value)
     }
 
     /**
@@ -48,7 +48,7 @@ function SignInModal(props) {
         event.preventDefault()
         if (!findFormErrors()) {
             const request = {
-                username: username,
+                email: email,
                 password: password,
             }
             AuthService.login(request)
@@ -86,8 +86,8 @@ function SignInModal(props) {
     const findFormErrors = () => {
         let isErrors = false
 
-        let errors = UserValidator.validateAllForSignIn(username, password)
-        setUsernameError(errors.usernameError)
+        let errors = UserValidator.validateAllForSignIn(email, password)
+        setEmailError(errors.emailError)
         setPasswordError(errors.passwordError)
 
         for (let key in errors) {
@@ -122,16 +122,16 @@ function SignInModal(props) {
                 </Collapse>
                 <Form>
                     <Form.Group className="mb-3">
-                        <Form.Label><b>Username</b></Form.Label>
+                        <Form.Label><b>Email</b></Form.Label>
                         <Form.Control
                             className="my-input"
                             type="text"
-                            placeholder="Input your username"
+                            placeholder="Input your email"
                             autoComplete="off"
                             onChange={changeEmailHandler}
-                            isInvalid={usernameError !== ''}
+                            isInvalid={emailError !== ''}
                         />
-                        <Form.Control.Feedback type='invalid'>{usernameError}</Form.Control.Feedback>
+                        <Form.Control.Feedback type='invalid'>{emailError}</Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label><b>Password</b></Form.Label>

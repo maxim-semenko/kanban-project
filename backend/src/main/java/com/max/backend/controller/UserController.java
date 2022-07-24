@@ -54,20 +54,6 @@ public class UserController {
         );
     }
 
-    @GetMapping("/byUsername/{username}/all")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Page<UserResponse>> findAllUsersByUsername(Pageable pageable, @PathVariable String username) {
-        return new ResponseEntity<>(
-                UserResponse.mapListUserToDTO(userService.findAllByUsernameContaining(pageable, username)),
-                HttpStatus.OK);
-    }
-
-    @GetMapping("/byUsername/{username}")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<UserResponse> findUserByUsername(@PathVariable String username) {
-        return new ResponseEntity<>(UserResponse.mapUserToDTO(userService.findByUsername(username)), HttpStatus.OK);
-    }
-
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER') and #id == authentication.principal.id")
     public ResponseEntity<UserResponse> updateById(@PathVariable Long id,

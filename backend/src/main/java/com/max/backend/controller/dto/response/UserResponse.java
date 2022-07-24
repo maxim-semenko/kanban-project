@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @ToString
 public class UserResponse {
     private Long id;
-    private String username;
     private String firstname;
     private String lastname;
     private String email;
@@ -32,7 +31,6 @@ public class UserResponse {
                 .collect(Collectors.toSet());
 
         userResponse.setId(user.getId());
-        userResponse.setUsername(user.getUsername());
         userResponse.setFirstname(user.getFirstname());
         userResponse.setLastname(user.getLastname());
         userResponse.setEmail(user.getEmail());

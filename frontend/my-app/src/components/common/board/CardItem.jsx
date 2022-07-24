@@ -1,6 +1,7 @@
 import React, {useContext, useState} from "react";
 import {BoardContext} from "./Board";
-import {Card} from "react-bootstrap";
+import {Card, CardActions, CardContent, Typography} from "@mui/material";
+import {Button} from "@mui/material";
 
 const initialEditedValues = {
     title: "",
@@ -21,7 +22,7 @@ function CardItem(props) {
 
     const clickHandler = (type) => {
         if (type === "edit") {
-            var formValues = taskState.find((task) => {
+            const formValues = taskState.find((task) => {
                 return task.id === props.task.id;
             });
             setFormValues(formValues);
@@ -41,22 +42,42 @@ function CardItem(props) {
     return (
         <>
             <Card key={props.task.id} className="card-task">
-                <Card.Body>
-                    <Card.Title>{props.task.title}{" "}</Card.Title>
+                <CardContent>
+                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        Word of the Day
+                    </Typography>
+                    <Typography variant="h5" component="div">
+                        bwww
+                    </Typography>
+                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                        adjective
+                    </Typography>
+                    <Typography variant="body2">
+                        well meaning and kindly.
+                        <br />
+                        {'"a benevolent smile"'}
+                    </Typography>
+                </CardContent>
+                <CardActions>
+                    <Button size="small">Learn More</Button>
+                </CardActions>
+                {/*<Card.Body>*/}
+                {/*    <Card.Title>{props.task.title}{" "}</Card.Title>*/}
 
-                    {/*    CONTENT*/}
-                    <div className="card-task-option pull-right">
-                        <a onClick={() => clickHandler("edit")}>
-                            {/*<i className="fas fa-edit"></i>*/}
-                            edit
-                        </a>
-                        &nbsp;
-                        <a onClick={() => clickHandler("delete")}>
-                            {/*<i className="fas fa-trash"></i>*/}
-                            delete
-                        </a>
-                    </div>
-                </Card.Body>
+                {/*    /!*    CONTENT*!/*/}
+                {/*    <div className="card-task-option pull-right">*/}
+                {/*        <a onClick={() => clickHandler("edit")}>*/}
+                {/*            /!*<i className="fas fa-edit"></i>*!/*/}
+                {/*            <Button>Edit</Button>*/}
+
+                {/*        </a>*/}
+                {/*        &nbsp;*/}
+                {/*        <a onClick={() => clickHandler("delete")}>*/}
+                {/*            /!*<i className="fas fa-trash"></i>*!/*/}
+                {/*            delete*/}
+                {/*        </a>*/}
+                {/*    </div>*/}
+                {/*</Card.Body>*/}
             </Card>
         </>
     );

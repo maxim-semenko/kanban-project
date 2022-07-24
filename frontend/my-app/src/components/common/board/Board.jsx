@@ -1,7 +1,7 @@
 import React, {createContext, useEffect, useReducer, useState} from "react";
 import BoardLanes from "./BoardLanes";
 import "./Board.css";
-import {Container, Row} from "react-bootstrap";
+import {Button, Container, Grid} from "@mui/material";
 
 const stagesData = [
     {name: "Required", id: 1},
@@ -140,7 +140,7 @@ function Board() {
     };
 
     const onDeletingTask = (taskId) => {
-        dispatch({ type: "ON_DELETE", payload: taskId });
+        dispatch({type: "ON_DELETE", payload: taskId});
     };
 
     const ContextData = {
@@ -156,21 +156,18 @@ function Board() {
     };
 
     return (
-        <Container fluid style={{padding: "0 10 0 10"}}>
-            <Row>
-                <div className="col-12">
-                    Add task
-                </div>
-            </Row>
+        <Container maxWidth={false} style={{padding: "0 12px 0 12px"}}>
+            <Button>Add task</Button>
+
             <hr/>
-            <div className="row" >
-                <div className="col-12">
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={12}>
                     <BoardContext.Provider value={ContextData}>
                         <BoardLanes stages={stages}/>
                     </BoardContext.Provider>
-                </div>
-            </div>
-            </Container>
+                </Grid>
+            </Grid>
+        </Container>
     );
 }
 

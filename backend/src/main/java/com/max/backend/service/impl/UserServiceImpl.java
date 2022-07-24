@@ -63,20 +63,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourseNotFoundException("Error: User not found by username!"));
-    }
-
-    @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourseNotFoundException("Error: User not found by email!"));
-    }
-
-    @Override
-    public Page<User> findAllByUsernameContaining(Pageable pageable, String username) {
-        return userRepository.findAllByUsernameContaining(pageable, username);
     }
 
     @Override
@@ -98,11 +87,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateById(UpdateUserRequest updateUserRequest, Long id) {
         User user = findById(id);
-        if (!updateUserRequest.getUsername().equals(user.getUsername())) {
-            if (userRepository.existsByUsername(updateUserRequest.getUsername())) {
-                throw new UsernameExistsException("Username is already in use!");
-            }
-        }
         if (!updateUserRequest.getEmail().equals(user.getEmail())) {
             if (userRepository.existsByEmail(updateUserRequest.getEmail())) {
                 throw new EmailAlreadyExistsException("Email is already in use!");
@@ -111,7 +95,6 @@ public class UserServiceImpl implements UserService {
 
         user.setFirstname(updateUserRequest.getFirstname());
         user.setLastname(updateUserRequest.getLastname());
-        user.setUsername(updateUserRequest.getUsername());
         user.setEmail(updateUserRequest.getEmail());
         user.setSpeciality(updateUserRequest.getSpeciality());
 

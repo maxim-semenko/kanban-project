@@ -108,27 +108,25 @@ class UserValidator {
         }
     }
 
-    validateAllForSignIn(username, password) {
-        let usernameError = this.validateUsername(username)
+    validateAllForSignIn(email, password) {
+        let emailError = this.validateEmail(email)
         let passwordError = this.validatePassword(password)
 
         return {
-            usernameError,
+            emailError,
             passwordError
         }
     }
 
-    validateForEditUser(firstname, lastname, username, email, about) {
+    validateForEditUser(firstname, lastname, email, about) {
         let firstnameError = this.validateFirstname(firstname)
         let lastnameError = this.validateLastname(lastname)
-        let usernameError = this.validateUsername(username)
         let emailError = this.validateEmail(email)
         let aboutError = this.validateAbout(about)
 
         return {
             firstnameError,
             lastnameError,
-            usernameError,
             emailError,
             aboutError
         }

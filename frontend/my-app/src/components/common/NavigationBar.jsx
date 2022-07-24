@@ -19,7 +19,7 @@ function NavigationBar() {
             return (
                 <div>
                     <Link to="/cabinet">
-                        <Button variant="outline-primary"><b>Cabinet [{user.username}]</b></Button>
+                        <Button variant="outline-primary"><b>Cabinet [{user.email}]</b></Button>
                     </Link>
                     {' '}
                     <Button variant="outline-danger" href={"/"}
@@ -28,7 +28,7 @@ function NavigationBar() {
             )
         } else {
             cookies.remove("token", {path: "/"})
-            localStorage.removeItem("current_user")
+            localStorage.removeItem("user")
             return (
                 <div>
                     <Button variant="outline-primary" onClick={() => setShowSignInModal(true)}>

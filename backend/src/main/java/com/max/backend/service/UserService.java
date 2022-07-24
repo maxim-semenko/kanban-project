@@ -17,11 +17,8 @@ public interface UserService {
 
     User findById(Long id);
 
-    User findByUsername(String username);
 
     User findByEmail(String email);
-
-    Page<User> findAllByUsernameContaining(Pageable pageable, String username);
 
     User updateById(UpdateUserRequest updateUserRequest, Long id);
 
