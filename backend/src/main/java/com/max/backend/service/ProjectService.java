@@ -14,7 +14,7 @@ public interface ProjectService {
 
     Project create(CreateProjectRequest createProjectRequest);
 
-    Project updateById(UpdateProjectRequest updateProjectRequest);
+    Project updateById(UpdateProjectRequest updateProjectRequest, Long id);
 
     Project deleteById(Long id);
 

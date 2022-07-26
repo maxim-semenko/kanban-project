@@ -44,8 +44,7 @@ public class UserController {
     }
 
     @GetMapping("/projects/{projectId}")
-//    @PreAuthorize("hasRole('ADMIN')")
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Page<UserResponse>> findAllUsersByProjectId(@PathVariable Long projectId,
                                                                       Pageable pageable) {
         return new ResponseEntity<>(

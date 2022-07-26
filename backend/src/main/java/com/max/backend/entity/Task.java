@@ -41,7 +41,7 @@ public class Task {
     private Long id;
 
     @NotBlank
-    @Size(min = 2, max = 128)
+    @Size(min = 2, max = 15)
     private String name;
 
     @NotBlank
@@ -59,16 +59,8 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     @NotNull
-    private Project project;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "tasks_m2m_tags",
-            joinColumns = {@JoinColumn(name = "task_id")},
-            inverseJoinColumns = {@JoinColumn(name = "tag_id")}
-    )
     @JsonIgnore
-    private List<Tag> tags = new ArrayList<>();
+    private Project project;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

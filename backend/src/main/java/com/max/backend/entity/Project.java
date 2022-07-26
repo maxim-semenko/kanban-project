@@ -1,16 +1,19 @@
 package com.max.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.max.backend.service.aop.ProjectListener;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@EntityListeners(ProjectListener.class)
 @Entity
 @Getter
 @Setter
@@ -34,13 +38,14 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
+@ToString
 public class Project extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 2, max = 128)
+    @Size(min = 2, max = 50)
     @NotBlank
     private String name;
 
@@ -48,7 +53,7 @@ public class Project extends BaseEntity{
     @NotBlank
     private String description;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "creator_user_id", referencedColumnName = "id")
     private User creator;
 
@@ -66,15 +71,11 @@ public class Project extends BaseEntity{
     private List<User> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
-    @JsonIgnore
+//    @JsonIgnore
     private List<Task> tasks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
-    @JsonIgnore
-    private List<Tag> tags = new ArrayList<>();
-
-    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
-    @JsonIgnore
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+//    @JsonIgnore
     private List<ProjectStatus> projectStatuses = new ArrayList<>();
 }
 

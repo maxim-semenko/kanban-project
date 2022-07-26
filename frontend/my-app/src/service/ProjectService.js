@@ -27,6 +27,22 @@ class UserService {
         })
     }
 
+    async createProject(request) {
+        return axios.post(`${API_URL}/`, request, {
+            headers: {
+                'Authorization': `Bearer ${cookies.get("token")}`,
+            }
+        })
+    }
+
+    async deleteProjectById(postId) {
+        return axios.delete(`${API_URL}/${postId}`, {
+            headers: {
+                'Authorization': `Bearer ${cookies.get("token")}`,
+            }
+        })
+    }
+
 }
 
 export default new UserService()

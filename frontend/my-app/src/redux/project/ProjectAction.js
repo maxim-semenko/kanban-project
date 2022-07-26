@@ -11,9 +11,19 @@ const gotProjectSuccess = (project) => ({
     payload: project,
 })
 
+const createdProjectSuccess = (project) => ({
+    type: types.CREATE_PROJECT,
+    payload: project,
+})
+
 const updatedProjectSuccess = (project) => ({
     type: types.UPDATE_PROJECT_BY_ID,
     payload: project,
+})
+
+const deletedProjectSuccess = (projectId) => ({
+    type: types.DELETE_PROJECT_BY_ID,
+    payload: projectId,
 })
 
 export const setCurrentPage = (page) => ({
@@ -34,6 +44,10 @@ export const setLoadingProjects = (loading) => ({
 export const setLoadingProject = (loading) => ({
     type: types.SET_LOADING_PROJECT,
     payload: loading
+})
+
+export const resetData = () => ({
+    type: types.RESET_DATA,
 })
 
 //============================================ Axios requests ==========================================================
@@ -72,28 +86,36 @@ export const getProjectById = (id) => {
     }
 }
 
-// export const updateUserRolesById = (request, id) => {
-//     return function (dispatch) {
-//         UserService.updateUserRolesById(request, id)
-//             .then((resp) => {
-//                 dispatch(updatedUserSuccess(resp.data))
-//                 console.log(resp.data)
-//             })
-//             .catch(error => {
-//                 console.log(error)
-//             })
-//     }
-// }
-//
-// export const updateUserIsNonLockedById = (request, id) => {
-//     return function (dispatch) {
-//         UserService.updateUserIsNonLockedById(request, id)
-//             .then((resp) => {
-//                 dispatch(updatedUserSuccess(resp.data))
-//                 console.log(resp.data)
-//             })
-//             .catch(error => {
-//                 console.log(error)
-//             })
-//     }
-// }
+export function createProject(project) {
+    return (dispatch) => {
+        return new Promise((resolve, reject) => {
+            ProjectService.createProject(project)
+                .then((response) => {
+                    dispatch(createdProjectSuccess(response.data))
+                    console.log(response)
+                    return resolve(response);
+                })
+                .catch(error => {
+                    console.log(error)
+                    return reject(error);
+                })
+        })
+    };
+}
+
+export const deleteProjectById = (projectId) => {
+    return (dispatch) => {
+        return new Promise((resolve, reject) => {
+            ProjectService.deleteProjectById(projectId)
+                .then((response) => {
+                    dispatch(deletedProjectSuccess(projectId))
+                    console.log(response)
+                    return resolve(response);
+                })
+                .catch(error => {
+                    console.log(error)
+                    return reject(error);
+                })
+        })
+    }
+}
