@@ -2,6 +2,7 @@ import React, {createContext, useEffect, useReducer, useState} from "react";
 import BoardLanes from "./BoardLanes";
 import "./Board.css";
 import {Button, Container, Grid} from "@mui/material";
+import Footer from "../Footer";
 
 const stagesData = [
     {name: "Required", id: 1},
@@ -160,7 +161,7 @@ function Board() {
             <Button>Add task</Button>
 
             <hr/>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} style={{marginBottom: "20px"}}>
                 <Grid item xs={12} md={12}>
                     <BoardContext.Provider value={ContextData}>
                         <BoardLanes stages={stages}/>

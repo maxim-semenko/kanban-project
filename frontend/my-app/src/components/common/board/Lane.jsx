@@ -8,6 +8,7 @@ function Lane(props) {
         <>
             {
                 taskState
+                    // Возможно фильтр здесь
                     .filter(x => x.stage === props.stage.id)
                     .map((item, index) => (
                         <div

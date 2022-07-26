@@ -48,23 +48,10 @@ class UserService {
         })
     }
 
-    async getAllFollowersByUserId(userId, page = 0, size = 0) {
-        return axios.get(`${API_URL}/${userId}/followers`, {
+    async getAllUsersByProjectId(projectId, page = 0, size = 0) {
+        return axios.get(`${API_URL}/projects/${projectId}`, {
             params: {
-                sort: 'username,asc',
-                page: page,
-                size: size,
-            },
-            headers: {
-                'Authorization': `Bearer ${cookies.get("token")}`,
-            }
-        })
-    }
-
-    async getAllFollowingsByUserId(userId, page = 0, size = 0) {
-        return axios.get(`${API_URL}/${userId}/followings`, {
-            params: {
-                sort: 'username,asc',
+                // sort: 'username,asc',
                 page: page,
                 size: size,
             },

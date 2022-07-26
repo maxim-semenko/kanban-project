@@ -1,12 +1,13 @@
 import React, {useRef, useState} from 'react';
 import DialogTitle from "@mui/material/DialogTitle";
-import {Card, CardActions, CardHeader, DialogActions, DialogContent, TextField} from "@mui/material";
+import {Card, CardActions, CardHeader, DialogActions, DialogContent, IconButton, TextField} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import {useDispatch} from "react-redux";
 import {createProject} from "../../redux/project/ProjectAction";
 import DeleteIcon from '@mui/icons-material/Delete';
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 function CreateUpdateProjectModal(props) {
     const user = JSON.parse(localStorage.getItem("user"))
@@ -183,15 +184,8 @@ function CreateUpdateProjectModal(props) {
                                             <div className="card-column" key={index} style={{width: "285px"}}>
                                                 <Card>
                                                     <CardHeader
-                                                        title={
-                                                            <h5>
-                                                                <b>
-                                                                    {index + 1}{'. '}{column.name}
-                                                                    <br/>
-                                                                    limit tasks: {column.limit}
-                                                                </b>
-                                                            </h5>
-                                                        }
+                                                        title={<b>{index + 1}{'. '} {column.name} </b>}
+                                                        subheader={<span>0/{column.limit}</span> }
                                                         style={{textTransform: "uppercase", textOverflow: "ellipsis"}}
                                                         className={"stage-header"}
                                                     />

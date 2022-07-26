@@ -68,6 +68,7 @@ public class Project extends BaseEntity{
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     @JsonIgnore
+    @Size(min = 1, max = 25)
     private List<User> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
