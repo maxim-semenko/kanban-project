@@ -61,6 +61,14 @@ class UserService {
         })
     }
 
+    async updateUserById(request, id) {
+        return axios.put(`${API_URL}/${id}`, request, {
+            headers: {
+                'Authorization': `Bearer ${cookies.get("token")}`
+            },
+        })
+    }
+
     /**
      * Update user's password by id.
      * @param request data

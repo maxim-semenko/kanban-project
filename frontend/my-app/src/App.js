@@ -7,7 +7,8 @@ import ProtectedRoute from "./components/common/ProtectedRoute";
 import CabinetPage from "./components/pages/user/cabinet/CabinetPage";
 import AboutPage from "./components/pages/AboutPage";
 import AboutProjectPage from "./components/pages/user/project/AboutProjectPage";
-import ProjectBoard from "./components/pages/user/project/ProjectBoard";
+import ProjectBoard from "./components/pages/user/project/board/ProjectBoard";
+import EditCabinetPage from "./components/pages/user/cabinet/EditCabinetPage";
 
 function App() {
     return (
@@ -17,10 +18,9 @@ function App() {
                 <Route path="about" element={<AboutPage/>}/>
                 <Route path="board" element={<BoardPage/>}/>
                 <Route path="cabinet" element={<ProtectedRoute><CabinetPage/></ProtectedRoute>}/>
+                <Route path="cabinet/edit" element={<ProtectedRoute><EditCabinetPage/></ProtectedRoute>}/>
                 <Route path="project/:id" element={<ProtectedRoute><AboutProjectPage/></ProtectedRoute>}/>
                 <Route path="project/:id/board" element={<ProtectedRoute><ProjectBoard/></ProtectedRoute>}/>
-                {/*<Route path="/login" element={<SignInModal/>}/>*/}
-                {/*<Route path="register" element={<ProtectedRoute><SignUpPage/></ProtectedRoute>}/>*/}
                 <Route path='*' exact={true} element={<NotFoundPage/>}/>
             </Routes>
         </div>

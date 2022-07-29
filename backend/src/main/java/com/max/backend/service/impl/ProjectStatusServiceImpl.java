@@ -1,6 +1,6 @@
 package com.max.backend.service.impl;
 
-import com.max.backend.controller.dto.request.UpdateProjectStatusRequest;
+import com.max.backend.controller.dto.request.UpdateTaskProjectStatusRequest;
 import com.max.backend.entity.Project;
 import com.max.backend.entity.ProjectStatus;
 import com.max.backend.exception.ResourseNotFoundException;
@@ -28,7 +28,7 @@ public class ProjectStatusServiceImpl implements ProjectStatusService {
     }
 
     @Override
-    public ProjectStatus updateById(UpdateProjectStatusRequest updateProjectStatusRequest, Long id) {
+    public ProjectStatus updateById(UpdateTaskProjectStatusRequest updateProjectStatusRequest, Long id) {
         return null;
     }
 

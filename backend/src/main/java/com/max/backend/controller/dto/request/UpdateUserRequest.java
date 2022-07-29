@@ -19,17 +19,12 @@ public class UpdateUserRequest {
     @NotBlank
     private String lastname;
 
-    @Size(min = 2, max = 30)
-    @NotBlank
-    private String username;
-
     @Size(min = 7, max = 50)
     @NotBlank
     @Email
     private String email;
 
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 30)
     private String speciality;
 
-    private String image;
 }

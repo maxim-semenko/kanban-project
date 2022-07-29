@@ -1,5 +1,7 @@
 package com.max.backend.security;
 
+import com.max.backend.entity.Role;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 @PropertySource("/jwt.properties")
@@ -41,6 +45,28 @@ public class JwtUtils {
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
+    }
+
+    public String createToken(String username, Set<Role> roles) {
+        Claims claims = Jwts.claims().setSubject(username);
+        claims.put("roles", getRoleNames(roles));
+
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + jwtExpirationMs);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, jwtSecret)
+                .compact();
+    }
+
+    private Set<String> getRoleNames(Set<Role> userRoles) {
+        Set<String> roles = new HashSet<>();
+        userRoles.forEach(role -> roles.add(role.getName().toString()));
+
+        return roles;
     }
 
     public String getUsernameFromJwtToken(String token) {

@@ -38,7 +38,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
-@ToString
 public class Project extends BaseEntity{
 
     @Id
@@ -69,14 +68,17 @@ public class Project extends BaseEntity{
     )
     @JsonIgnore
     @Size(min = 1, max = 25)
+    @ToString.Exclude
     private List<User> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
-//    @JsonIgnore
+    @JsonIgnore
+    @ToString.Exclude
     private List<Task> tasks = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-//    @JsonIgnore
+    @JsonIgnore
+    @ToString.Exclude
     private List<ProjectStatus> projectStatuses = new ArrayList<>();
 }
 

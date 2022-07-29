@@ -1,13 +1,24 @@
 import React, {useRef, useState} from 'react';
 import DialogTitle from "@mui/material/DialogTitle";
-import {Card, CardActions, CardHeader, DialogActions, DialogContent, IconButton, TextField} from "@mui/material";
+import {
+    AppBar,
+    Card,
+    CardActions,
+    CardHeader,
+    DialogActions,
+    DialogContent,
+    IconButton,
+    TextField,
+    Toolbar,
+    Typography
+} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import {useDispatch} from "react-redux";
 import {createProject} from "../../redux/project/ProjectAction";
 import DeleteIcon from '@mui/icons-material/Delete';
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import CloseIcon from '@mui/icons-material/Close';
 
 function CreateUpdateProjectModal(props) {
     const user = JSON.parse(localStorage.getItem("user"))
@@ -79,7 +90,7 @@ function CreateUpdateProjectModal(props) {
         }
 
         if (currentLimit < 1 || currentLimit > 100) {
-            setCurrentLimitError("The limit must be more beetween 1 and 100")
+            setCurrentLimitError("The limit must be between 1 and 100!")
             isError = true
         }
 
@@ -88,7 +99,7 @@ function CreateUpdateProjectModal(props) {
                 let obj = {name: currentColumn, limit: currentLimit}
                 setColumns([...columns, obj]);
                 setCurrentColumn("")
-                setDivWidth((columns.length + 1) * 281 + (columns.length + 1) * 16);
+                setDivWidth((columns.length + 1) * 273 + (columns.length + 1) * 16);
             } else {
                 setColumnsError("The max size of columns is 10!")
                 setCurrentLimitError("  ")
@@ -101,8 +112,30 @@ function CreateUpdateProjectModal(props) {
     }
 
     return (
-        <Dialog open={props.show} onClose={props.onHide} fullWidth maxWidth="lg" fullScreen>
-            <DialogTitle style={{backgroundColor: "#eeeded"}}><b>Create project</b></DialogTitle>
+        <Dialog open={props.show} onClose={props.onHide} fullWidth maxWidth="lg">
+            <AppBar sx={{position: 'relative'}}>
+                <Toolbar>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        onClick={props.onHide}
+                        aria-label="close"
+                    >
+                        <CloseIcon/>
+                    </IconButton>
+                    <Typography sx={{ml: 2, flex: 1}} variant="h6" component="div">
+                        Create Project
+                    </Typography>
+                    <Button
+                        onClick={handleCreateProject}
+                        // disabled={loadingProject}
+                        color={"success"}
+                        variant={"contained"}
+                    >
+                        Create
+                    </Button>
+                </Toolbar>
+            </AppBar>
             <DialogContent>
                 <form style={{width: '100%', marginTop: '24px',}} noValidate>
                     <Grid container spacing={2}>
@@ -138,7 +171,7 @@ function CreateUpdateProjectModal(props) {
                         <Grid item xs={12}>
                             <h6>Project columns (keep order)</h6>
                             <Grid container>
-                                <Grid item xs={9.45} md={9.2} lg={9.45}>
+                                <Grid item xs={9} md={9} lg={8.8}>
                                     <TextField
                                         variant="outlined"
                                         fullWidth
@@ -151,7 +184,7 @@ function CreateUpdateProjectModal(props) {
                                         onChange={handlerChangeCurrentColumn}
                                     />
                                 </Grid>
-                                <Grid item xs={2} md={2} lg={2}>
+                                <Grid item xs={2} md={2} lg={2.5}>
                                     <TextField
                                         InputProps={{inputProps: {min: 0, max: 100}}}
                                         type={"number"}
@@ -181,11 +214,11 @@ function CreateUpdateProjectModal(props) {
                                 <div style={{marginLeft: "0px", marginTop: "10px", width: divWidth}}>
                                     {columns.map((column, index) => (
                                         <>
-                                            <div className="card-column" key={index} style={{width: "285px"}}>
+                                            <div className="card-column" key={index} style={{width: "277px"}}>
                                                 <Card>
                                                     <CardHeader
-                                                        title={<b>{index + 1}{'. '} {column.name} </b>}
-                                                        subheader={<span>0/{column.limit}</span> }
+                                                        title={<h6><b>{index + 1}{'. '} {column.name}</b></h6>}
+                                                        subheader={<span>0/{column.limit}</span>}
                                                         style={{textTransform: "uppercase", textOverflow: "ellipsis"}}
                                                         className={"stage-header"}
                                                     />
@@ -206,19 +239,6 @@ function CreateUpdateProjectModal(props) {
                     </Grid>
                 </form>
             </DialogContent>
-            <DialogActions style={{backgroundColor: "#eeeded"}}>
-                <Button onClick={props.onHide} color={"error"} variant={"contained"}>
-                    Close
-                </Button>
-                <Button
-                    onClick={handleCreateProject}
-                    // disabled={loadingProject}
-                    color={"success"}
-                    variant={"contained"}
-                >
-                    Create
-                </Button>
-            </DialogActions>
         </Dialog>
     );
 }

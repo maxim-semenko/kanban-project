@@ -9,8 +9,9 @@ import Footer from "../../../common/Footer";
 import ProjectMembersList from "./ProjectMembersList";
 import {getProjectById} from "../../../../redux/project/ProjectAction";
 import RemoveProjectDialog from "../../../dialogs/RemoveProjectDialog";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import UserService from "../../../../service/UserService";
+import AddMemberProjectDialog from "../../../dialogs/AddMemberProjectDialog";
 
 function AboutProjectPage(props) {
     const {id} = useParams();
@@ -20,6 +21,7 @@ function AboutProjectPage(props) {
     const dispatch = useDispatch()
 
     const [showDeleteProjectModal, setShowDeleteProjectModal] = useState(false)
+    const [showAddMemberModal, setShowAddMemberModal] = useState(false)
 
     const [members, setMembers] = useState([])
 
@@ -49,6 +51,14 @@ function AboutProjectPage(props) {
                 <RemoveProjectDialog
                     show={showDeleteProjectModal}
                     onHide={() => setShowDeleteProjectModal(false)}
+                />
+            )
+        }
+        if (showAddMemberModal) {
+            return (
+                <AddMemberProjectDialog
+                    show={showAddMemberModal}
+                    onHide={() => setShowAddMemberModal(false)}
                 />
             )
         }
@@ -94,6 +104,13 @@ function AboutProjectPage(props) {
                                         <hr/>
                                         <h3>Project members:</h3>
                                         <hr/>
+                                        <Button color={"success"}
+                                                variant={"contained"}
+                                                style={{marginBottom: "10px"}}
+                                                onClick={() => setShowAddMemberModal(true)}
+                                        >
+                                            Add member
+                                        </Button>
                                         <ProjectMembersList project={project} list={members}/>
                                     </div>
                                 </Grid>

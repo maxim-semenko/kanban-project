@@ -22,7 +22,7 @@ class AuthService {
 
     // Get new token
     async getToken(userId) {
-        return axios.get(`${API_URL}/token/${userId}`)
+        return axios.get(`${API_URL}/token`)
     }
 
     // Logout user

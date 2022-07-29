@@ -62,6 +62,11 @@ public class Task {
     @JsonIgnore
     private Project project;
 
+    @ManyToOne
+    @JoinColumn(name = "project_status_id", referencedColumnName = "id")
+    @NotNull
+    private ProjectStatus projectStatus;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "tasks_m2m_users",

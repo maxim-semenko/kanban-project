@@ -14,4 +14,6 @@ public interface AuthService {
 
     MessageResponse restorePassword(RestorePasswordRequest request);
 
+    String generateNewTokenForAuthenticationUser();
+
 }

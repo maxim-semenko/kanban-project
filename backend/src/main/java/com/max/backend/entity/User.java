@@ -55,15 +55,15 @@ public class User extends BaseEntity {
     private String password;
 
     @NotBlank
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 30)
     private String firstname;
 
     @NotBlank
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 30)
     private String lastname;
 
     @NotBlank
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 30)
     private String speciality;
 
     @NotNull

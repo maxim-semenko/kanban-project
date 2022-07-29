@@ -19,7 +19,7 @@ function ImageProfile(props) {
     const showEditProfile = () => {
         if (user.id === props.user.id) {
             return (
-                <Link to={"/edit"} style={linkStyle}>
+                <Link to={"/cabinet/edit"} style={linkStyle}>
                     <Button fullWidth
                             variant="contained"
                             color="primary"

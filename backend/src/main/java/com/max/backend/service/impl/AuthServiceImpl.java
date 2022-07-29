@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtUtils.generateJwtToken(authentication);
+        String token = jwtUtils.createToken(request.getEmail(), user.getRoles());
 
         return new JwtResponse(token, UserResponse.mapUserToDTO(user));
     }
@@ -104,6 +104,12 @@ public class AuthServiceImpl implements AuthService {
 //        }
 
         return new MessageResponse("Password was restore successfully!");
+    }
+
+    @Override
+    public String generateNewTokenForAuthenticationUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return jwtUtils.generateJwtToken(authentication);
     }
 
 }

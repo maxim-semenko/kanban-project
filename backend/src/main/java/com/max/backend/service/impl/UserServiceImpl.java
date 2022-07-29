@@ -4,7 +4,9 @@ import com.max.backend.controller.dto.request.UpdatePasswordRequest;
 import com.max.backend.controller.dto.request.UpdateUserIsNonLockedRequest;
 import com.max.backend.controller.dto.request.UpdateUserRequest;
 import com.max.backend.controller.dto.request.UpdateUserRolesRequest;
+import com.max.backend.controller.dto.response.JwtResponse;
 import com.max.backend.controller.dto.response.MessageResponse;
+import com.max.backend.controller.dto.response.UserResponse;
 import com.max.backend.entity.Project;
 import com.max.backend.entity.Role;
 import com.max.backend.entity.User;
@@ -12,14 +14,18 @@ import com.max.backend.entity.enums.RoleEnum;
 import com.max.backend.exception.EmailAlreadyExistsException;
 import com.max.backend.exception.ResourseNotFoundException;
 import com.max.backend.exception.UserPasswordNotMatchesException;
-import com.max.backend.exception.UsernameExistsException;
 import com.max.backend.repository.ProjectRepository;
 import com.max.backend.repository.RoleRepository;
 import com.max.backend.repository.UserRepository;
+import com.max.backend.security.JwtUtils;
 import com.max.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +41,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final ProjectRepository projectRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
 
     @Override
     public User findById(Long id) {
@@ -85,7 +93,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateById(UpdateUserRequest updateUserRequest, Long id) {
+    @Transactional
+    public JwtResponse updateById(UpdateUserRequest updateUserRequest, Long id) {
         User user = findById(id);
         if (!updateUserRequest.getEmail().equals(user.getEmail())) {
             if (userRepository.existsByEmail(updateUserRequest.getEmail())) {
@@ -97,8 +106,17 @@ public class UserServiceImpl implements UserService {
         user.setLastname(updateUserRequest.getLastname());
         user.setEmail(updateUserRequest.getEmail());
         user.setSpeciality(updateUserRequest.getSpeciality());
+        userRepository.save(user);
 
-        return userRepository.save(user);
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(user.getEmail(), passwordEncoder.));
+
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String token = jwtUtils.createToken(user.getEmail(), user.getRoles());
+
+        return new JwtResponse(token, UserResponse.mapUserToDTO(user));
     }
 
     @Override

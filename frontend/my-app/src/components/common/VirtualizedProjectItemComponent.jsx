@@ -2,27 +2,9 @@ import * as React from 'react';
 import {Button, CardActions, CardContent, Typography} from "@mui/material";
 import Card from "@mui/material/Card";
 import {Link} from "react-router-dom";
+import dayjs from "dayjs";
 
 export default function VirtualizedProjectItemComponent(props) {
-    // const dispatch = useDispatch()
-    // const [showDeleteProjectModal, setShowDeleteProjectModal] = useState(false)
-    //
-    // const handleRemovePost = (id) => {
-    //     dispatch(getProjectById(id))
-    //     setShowDeleteProjectModal(true)
-    // }
-    //
-    // const showModals = () => {
-    //     if (showDeleteProjectModal) {
-    //         return (
-    //             <CreateUpdateProjectModal
-    //                 show={showDeleteProjectModal}
-    //                 close={() => setShowDeleteProjectModal(false)}
-    //             />
-    //         )
-    //     }
-    // }
-
     return (
         <Card sx={{minWidth: 275}}
               style={{
@@ -44,7 +26,7 @@ export default function VirtualizedProjectItemComponent(props) {
                     ({props.project.creator.email})
                 </Typography>
                 <Typography variant="body2">
-                    <b>Created date:</b> {props.project.createdDate}
+                    <b>Created:</b> {dayjs(props.project.createdDate).format('MMMM D YYYY, h:mm A')}
                 </Typography>
             </CardContent>
             <CardActions>

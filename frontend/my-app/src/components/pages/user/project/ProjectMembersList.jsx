@@ -4,7 +4,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import {FixedSizeList} from 'react-window';
-import {Avatar, ListItemAvatar, Typography} from "@mui/material";
+import {Avatar, Button, IconButton, ListItemAvatar, Typography} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 
 export default function ProjectMembersList(props) {
@@ -13,7 +14,25 @@ export default function ProjectMembersList(props) {
         const member = data[index];
 
         return (
-            <ListItem style={style} key={index} component="div" disablePadding>
+            <ListItem
+                style={style}
+                key={index}
+                component="div"
+                disablePadding
+                secondaryAction={
+                    props.project.creator.id !== member.id ?
+                        <IconButton edge="end">
+                            <Button color={"error"} variant={"contained"}>
+                                Delete member
+                            </Button>
+                            {/*<DeleteIcon*/}
+                            {/*    // onClick={() => handleRemoveComment(comment.id)}*/}
+                            {/*/>*/}
+                        </IconButton>
+                        :
+                        null
+                }
+            >
                 <ListItemButton>
                     <ListItemAvatar><Avatar/></ListItemAvatar>
                     <ListItemText

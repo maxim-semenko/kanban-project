@@ -1,6 +1,7 @@
 package com.max.backend.controller;
 
 import com.max.backend.controller.dto.request.CreateTaskRequest;
+import com.max.backend.controller.dto.request.UpdateTaskProjectStatusRequest;
 import com.max.backend.controller.dto.request.UpdateTaskRequest;
 import com.max.backend.entity.Task;
 import com.max.backend.service.TaskService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -56,6 +58,13 @@ public class TaskController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Task> deleteTaskById(@PathVariable Long id) {
         return new ResponseEntity<>(taskService.deleteById(id), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}/project-status")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Task> updateTaskById(@RequestBody @Valid UpdateTaskProjectStatusRequest request,
+                                               @PathVariable Long id) {
+        return new ResponseEntity<>(taskService.updateProjectStatusById(request, id), HttpStatus.OK);
     }
 
 }

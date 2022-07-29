@@ -4,6 +4,7 @@ import com.max.backend.controller.dto.request.UpdatePasswordRequest;
 import com.max.backend.controller.dto.request.UpdateUserIsNonLockedRequest;
 import com.max.backend.controller.dto.request.UpdateUserRequest;
 import com.max.backend.controller.dto.request.UpdateUserRolesRequest;
+import com.max.backend.controller.dto.response.JwtResponse;
 import com.max.backend.controller.dto.response.MessageResponse;
 import com.max.backend.entity.User;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ public interface UserService {
 
     User findByEmail(String email);
 
-    User updateById(UpdateUserRequest updateUserRequest, Long id);
+    JwtResponse updateById(UpdateUserRequest updateUserRequest, Long id);
 
     MessageResponse deleteById(Long id);
 
