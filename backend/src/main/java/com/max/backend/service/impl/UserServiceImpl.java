@@ -51,6 +51,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<User> findAllByEmail(Pageable pageable, String email) {
+        return userRepository.findAllByEmailContaining(pageable, email);
+    }
+
+    @Override
     @Transactional
     public MessageResponse deleteById(Long id) {
         User user = findById(id);

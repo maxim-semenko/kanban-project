@@ -1,11 +1,9 @@
-import React, {useRef, useState} from 'react';
-import DialogTitle from "@mui/material/DialogTitle";
+import React, {useEffect, useRef, useState} from 'react';
 import {
     AppBar,
     Card,
     CardActions,
     CardHeader,
-    DialogActions,
     DialogContent,
     IconButton,
     TextField,
@@ -15,14 +13,17 @@ import {
 import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import {useDispatch} from "react-redux";
-import {createProject} from "../../redux/project/ProjectAction";
+import {useDispatch, useSelector} from "react-redux";
+import {createProject, updateProjectById} from "../../redux/project/ProjectAction";
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
+import {getUsersByProjectId, resetData} from "../../redux/user/UserAction";
+import ProjectService from "../../service/ProjectService";
 
 function CreateUpdateProjectModal(props) {
     const user = JSON.parse(localStorage.getItem("user"))
     const dispatch = useDispatch()
+    const {project, loadingProject} = useSelector(state => state.dataProjects)
 
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -41,6 +42,16 @@ function CreateUpdateProjectModal(props) {
 
     // ------
     const currentColumnInputRef = useRef(null);
+
+    useEffect(() => {
+        if (props.method === "update" && project !== null) {
+            setName(project.name)
+            setDescription(project.description)
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [project])
+
 
     const handlerChangeName = (event) => {
         setName(event.target.value)
@@ -62,20 +73,32 @@ function CreateUpdateProjectModal(props) {
         setCurrentLimitError('');
     }
 
-    const handleCreateProject = (event) => {
-        const request = {
-            name: name,
-            description: description,
-            creatorId: user.id,
-            projectStatuses: columns
+    const handleUpdateCreateProject = (event) => {
+        if (props.method === "create") {
+            const request = {
+                name: name,
+                description: description,
+                creatorId: user.id,
+                projectStatuses: columns
+            }
+
+            console.log(request)
+
+            dispatch(createProject(request))
+                .then(() => {
+                    props.onHide()
+                })
+        } else {
+            const request = {
+                name: name,
+                description: description,
+            }
+            dispatch(updateProjectById(request, project.id))
+                .then(() => {
+                    props.onHide()
+                })
         }
 
-        console.log(request)
-
-        dispatch(createProject(request))
-            .then(() => {
-                props.onHide()
-            })
     }
 
     const addColumn = () => {
@@ -111,6 +134,81 @@ function CreateUpdateProjectModal(props) {
         setColumns(columns.filter(item => item.name !== name));
     }
 
+    const showCreateColumns = () => {
+        if (props.method === "create") {
+            return (
+                <Grid item xs={12}>
+                    <h6>Project columns (keep order)</h6>
+                    <Grid container>
+                        <Grid item xs={9} md={9} lg={8.8}>
+                            <TextField
+                                variant="outlined"
+                                fullWidth
+                                label="Column name"
+                                autoComplete="off"
+                                value={currentColumn}
+                                inputRef={currentColumnInputRef}
+                                error={columnsError !== ''}
+                                helperText={columnsError ? columnsError : ''}
+                                onChange={handlerChangeCurrentColumn}
+                            />
+                        </Grid>
+                        <Grid item xs={2} md={2} lg={2.5}>
+                            <TextField
+                                InputProps={{inputProps: {min: 0, max: 100}}}
+                                type={"number"}
+                                variant="outlined"
+                                fullWidth
+                                label="Column task limit"
+                                autoComplete="off"
+                                value={currentLimit}
+                                error={currentLimitError !== ''}
+                                helperText={currentLimitError ? currentLimitError : ''}
+                                onChange={handlerChangeCurrentLimit}
+                            />
+                        </Grid>
+                        <Grid item alignItems="stretch" style={{display: "flex", maxHeight: "55px"}}>
+                            <Button
+                                color="primary"
+                                variant="contained"
+                                // disabled={sendingMail}
+                                onClick={addColumn}
+                            >
+                                Add
+                            </Button>
+                        </Grid>
+                    </Grid>
+                    <div className="column-wrapper">
+
+                        <div style={{marginLeft: "0px", marginTop: "10px", width: divWidth}}>
+                            {columns.map((column, index) => (
+                                <>
+                                    <div className="card-column" key={index} style={{width: "277px"}}>
+                                        <Card>
+                                            <CardHeader
+                                                title={<h6><b>{index + 1}{'. '} {column.name}</b></h6>}
+                                                subheader={<span>0/{column.limit}</span>}
+                                                style={{textTransform: "uppercase", textOverflow: "ellipsis"}}
+                                                className={"stage-header"}
+                                            />
+                                            <CardActions>
+                                                <DeleteIcon
+                                                    color={"error"}
+                                                    style={{cursor: "pointer"}}
+                                                    onClick={() => deleteColumn(column.name)}
+                                                />
+                                            </CardActions>
+                                        </Card>
+                                    </div>
+                                </>
+                            ))}
+                        </div>
+                    </div>
+                </Grid>
+            )
+        }
+    }
+
     return (
         <Dialog open={props.show} onClose={props.onHide} fullWidth maxWidth="lg">
             <AppBar sx={{position: 'relative'}}>
@@ -124,15 +222,16 @@ function CreateUpdateProjectModal(props) {
                         <CloseIcon/>
                     </IconButton>
                     <Typography sx={{ml: 2, flex: 1}} variant="h6" component="div">
-                        Create Project
+                        {props.method === "create" ? 'Create project' : 'Update project'}
+
                     </Typography>
                     <Button
-                        onClick={handleCreateProject}
-                        // disabled={loadingProject}
+                        onClick={handleUpdateCreateProject}
+                        disabled={props.method === "update" && loadingProject}
                         color={"success"}
                         variant={"contained"}
                     >
-                        Create
+                        {props.method === "create" ? 'Create' : 'Update'}
                     </Button>
                 </Toolbar>
             </AppBar>
@@ -168,74 +267,7 @@ function CreateUpdateProjectModal(props) {
                                 onChange={handlerChangeDescription}
                             />
                         </Grid>
-                        <Grid item xs={12}>
-                            <h6>Project columns (keep order)</h6>
-                            <Grid container>
-                                <Grid item xs={9} md={9} lg={8.8}>
-                                    <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        label="Column name"
-                                        autoComplete="off"
-                                        value={currentColumn}
-                                        inputRef={currentColumnInputRef}
-                                        error={columnsError !== ''}
-                                        helperText={columnsError ? columnsError : ''}
-                                        onChange={handlerChangeCurrentColumn}
-                                    />
-                                </Grid>
-                                <Grid item xs={2} md={2} lg={2.5}>
-                                    <TextField
-                                        InputProps={{inputProps: {min: 0, max: 100}}}
-                                        type={"number"}
-                                        variant="outlined"
-                                        fullWidth
-                                        label="Column task limit"
-                                        autoComplete="off"
-                                        value={currentLimit}
-                                        error={currentLimitError !== ''}
-                                        helperText={currentLimitError ? currentLimitError : ''}
-                                        onChange={handlerChangeCurrentLimit}
-                                    />
-                                </Grid>
-                                <Grid item alignItems="stretch" style={{display: "flex", maxHeight: "55px"}}>
-                                    <Button
-                                        color="primary"
-                                        variant="contained"
-                                        // disabled={sendingMail}
-                                        onClick={addColumn}
-                                    >
-                                        Add
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                            <div className="column-wrapper">
-
-                                <div style={{marginLeft: "0px", marginTop: "10px", width: divWidth}}>
-                                    {columns.map((column, index) => (
-                                        <>
-                                            <div className="card-column" key={index} style={{width: "277px"}}>
-                                                <Card>
-                                                    <CardHeader
-                                                        title={<h6><b>{index + 1}{'. '} {column.name}</b></h6>}
-                                                        subheader={<span>0/{column.limit}</span>}
-                                                        style={{textTransform: "uppercase", textOverflow: "ellipsis"}}
-                                                        className={"stage-header"}
-                                                    />
-                                                    <CardActions>
-                                                        <DeleteIcon
-                                                            color={"error"}
-                                                            style={{cursor: "pointer"}}
-                                                            onClick={() => deleteColumn(column.name)}
-                                                        />
-                                                    </CardActions>
-                                                </Card>
-                                            </div>
-                                        </>
-                                    ))}
-                                </div>
-                            </div>
-                        </Grid>
+                        {showCreateColumns()}
                     </Grid>
                 </form>
             </DialogContent>

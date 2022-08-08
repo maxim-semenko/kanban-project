@@ -7,6 +7,7 @@ import VirtualizedProjectItemComponent from "../../../common/VirtualizedProjectI
 import {getAllProjectByUserId, getProjectById, setCurrentPage} from "../../../../redux/project/ProjectAction";
 import {useDispatch, useSelector} from "react-redux";
 import RemoveProjectDialog from "../../../dialogs/RemoveProjectDialog";
+import Box from "@mui/material/Box";
 
 function CabinetProjectList(props) {
     const user = JSON.parse(localStorage.getItem("user"))
@@ -70,7 +71,9 @@ function CabinetProjectList(props) {
                     <div>
                         {
                             loadingProjects ?
-                                <CircularProgress style={{marginTop: "15px"}}/>
+                                <Box display="flex" justifyContent="center">
+                                    <CircularProgress style={{marginTop: "15px"}}/>
+                                </Box>
                                 :
                                 <div>Nothing projects here</div>
                         }

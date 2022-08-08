@@ -1,5 +1,6 @@
 import * as types from "./UserActionType"
 import UserService from "../../service/UserService";
+import ProjectService from "../../service/ProjectService";
 
 const gotUsersSuccess = (users) => ({
     type: types.GET_USERS,
@@ -14,6 +15,16 @@ const gotUserSuccess = (user) => ({
 const updatedUserSuccess = (user) => ({
     type: types.UPDATE_USER_BY_ID,
     payload: user,
+})
+
+const addedUserSuccess = (user) => ({
+    type: types.ADD_USER,
+    payload: user,
+})
+
+const deletedUserSuccess = (userId) => ({
+    type: types.DELETE_USER_BY_ID,
+    payload: userId,
 })
 
 export const setCurrentPage = (page) => ({
@@ -34,6 +45,10 @@ export const setLoadingUsers = (loading) => ({
 export const setLoadingUser = (loading) => ({
     type: types.SET_LOADING_USER,
     payload: loading
+})
+
+export const resetData = () => ({
+    type: types.RESET_DATA,
 })
 
 //============================================ Axios requests ==========================================================
@@ -72,6 +87,23 @@ export const getUserById = (id) => {
     }
 }
 
+export const getUsersByProjectId = (projectId, currentPage = 0, sizePage = 0) => {
+    return function (dispatch) {
+        dispatch(setLoadingUsers(true))
+        UserService.getAllUsersByProjectId(projectId, currentPage, sizePage)
+            .then((resp) => {
+                dispatch(gotUsersSuccess(resp.data))
+                console.log(resp.data)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+            .finally(() => {
+                dispatch(setLoadingUsers(false))
+            })
+    }
+}
+
 export const updateUserRolesById = (request, id) => {
     return function (dispatch) {
         UserService.updateUserRolesById(request, id)
@@ -95,5 +127,39 @@ export const updateUserIsNonLockedById = (request, id) => {
             .catch(error => {
                 console.log(error)
             })
+    }
+}
+
+export const addUserToProjectByProjectId = (projectId, user) => {
+    return (dispatch) => {
+        return new Promise((resolve, reject) => {
+            ProjectService.addUserToProjectByProjectIdAndUserId(projectId, user.id)
+                .then((response) => {
+                    console.log(response)
+                    dispatch(addedUserSuccess(user))
+                    return resolve(response);
+                })
+                .catch(error => {
+                    console.log(error)
+                    return reject(error);
+                })
+        })
+    }
+}
+
+export const removeUserFromProjectByProjectId = (projectId, userId) => {
+    return (dispatch) => {
+        return new Promise((resolve, reject) => {
+            ProjectService.removeUserFromProjectByProjectIdAndUserId(projectId, userId)
+                .then((response) => {
+                    console.log(response)
+                    dispatch(deletedUserSuccess(userId))
+                    return resolve(response);
+                })
+                .catch(error => {
+                    console.log(error)
+                    return reject(error);
+                })
+        })
     }
 }

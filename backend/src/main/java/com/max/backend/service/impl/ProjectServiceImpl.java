@@ -6,6 +6,7 @@ import com.max.backend.controller.dto.request.UpdateProjectRequest;
 import com.max.backend.entity.Project;
 import com.max.backend.entity.ProjectStatus;
 import com.max.backend.entity.User;
+import com.max.backend.exception.ProjectMemberException;
 import com.max.backend.exception.ResourseNotFoundException;
 import com.max.backend.repository.ProjectRepository;
 import com.max.backend.repository.ProjectStatusRepository;
@@ -72,7 +73,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project updateById(UpdateProjectRequest updateProjectRequest, Long id) {
-        return null;
+        Project project = findById(id);
+        project.setName(updateProjectRequest.getName());
+        project.setDescription(updateProjectRequest.getDescription());
+
+        return projectRepository.save(project);
     }
 
     @Override
@@ -81,5 +86,41 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.delete(project);
 
         return project;
+    }
+
+    @Override
+    public Project addUser(Long projectId, Long userId) {
+        Project project = findById(projectId);
+
+        User existedUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourseNotFoundException("Error: User not found!"));
+
+        project.getMembers()
+                .stream()
+                .filter(user -> !user.equals(existedUser)).findFirst()
+                .orElseThrow(() -> new ProjectMemberException("User is already exists in project!"));
+        project.getMembers().add(existedUser);
+
+        return projectRepository.save(project);
+    }
+
+    @Override
+    public Project deleteUser(Long projectId, Long userId) {
+        Project project = findById(projectId);
+
+        if (project.getCreator().getId().equals(userId)) {
+            throw new ProjectMemberException("Error: creator can't delete yourself");
+        }
+
+        User existedUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourseNotFoundException("Error: User not found!"));
+
+        project.getMembers()
+                .stream()
+                .filter(user -> user.equals(existedUser)).findFirst()
+                .orElseThrow(() -> new ProjectMemberException("User not found in project!"));
+        project.getMembers().remove(existedUser);
+
+        return projectRepository.save(project);
     }
 }

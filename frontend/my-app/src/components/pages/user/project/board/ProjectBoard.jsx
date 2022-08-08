@@ -27,6 +27,9 @@ function ProjectBoard(props) {
                                 Back to project
                             </Button>
                         </Link>
+                        <Button size={"large"} color={"primary"} style={{borderRadius: "0px"}}>
+                            Add column
+                        </Button>
                         <Button size={"large"} color={"success"} style={{borderRadius: "0px"}}>
                             Add task
                         </Button>

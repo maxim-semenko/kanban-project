@@ -35,8 +35,32 @@ class UserService {
         })
     }
 
+    async updateProject(request, id) {
+        return axios.put(`${API_URL}/${id}`, request, {
+            headers: {
+                'Authorization': `Bearer ${cookies.get("token")}`,
+            }
+        })
+    }
+
     async deleteProjectById(postId) {
         return axios.delete(`${API_URL}/${postId}`, {
+            headers: {
+                'Authorization': `Bearer ${cookies.get("token")}`,
+            }
+        })
+    }
+
+    async addUserToProjectByProjectIdAndUserId(projectId, userId) {
+        return axios.put(`${API_URL}/${projectId}/users/${userId}`, null,{
+            headers: {
+                'Authorization': `Bearer ${cookies.get("token")}`,
+            }
+        })
+    }
+
+    async removeUserFromProjectByProjectIdAndUserId(projectId, userId) {
+        return axios.delete(`${API_URL}/${projectId}/users/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${cookies.get("token")}`,
             }

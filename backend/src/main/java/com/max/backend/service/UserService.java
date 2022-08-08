@@ -18,6 +18,8 @@ public interface UserService {
 
     User findById(Long id);
 
+    Page<User> findAllByEmail(Pageable pageable, String email);
+
 
     User findByEmail(String email);
 

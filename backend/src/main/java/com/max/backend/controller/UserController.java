@@ -44,10 +44,18 @@ public class UserController {
         return new ResponseEntity<>(UserResponse.mapListUserToDTO(userService.findAll(pageable)), HttpStatus.OK);
     }
 
+    @GetMapping("/byEmail/{email}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Page<UserResponse>> findAllUsersByEmail(Pageable pageable, @PathVariable String email) {
+        return new ResponseEntity<>(
+                UserResponse.mapListUserToDTO(userService.findAllByEmail(pageable, email)),
+                HttpStatus.OK
+        );
+    }
+
     @GetMapping("/projects/{projectId}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Page<UserResponse>> findAllUsersByProjectId(@PathVariable Long projectId,
-                                                                      Pageable pageable) {
+    public ResponseEntity<Page<UserResponse>> findAllUsersByProjectId(@PathVariable Long projectId, Pageable pageable) {
         return new ResponseEntity<>(
                 UserResponse.mapListUserToDTO(userService.findAllByProjectId(pageable, projectId)),
                 HttpStatus.OK
@@ -87,7 +95,8 @@ public class UserController {
                                                      @RequestBody UpdateUserIsNonLockedRequest request) {
         return new ResponseEntity<>(
                 UserResponse.mapUserToDTO(userService.updateUserIsNonLockerById(request, id)),
-                HttpStatus.OK);
+                HttpStatus.OK
+        );
     }
 
     /**
@@ -102,7 +111,8 @@ public class UserController {
     public ResponseEntity<UserResponse> updateRoles(@PathVariable Long id, @RequestBody UpdateUserRolesRequest request) {
         return new ResponseEntity<>(
                 UserResponse.mapUserToDTO(userService.updateUserRolesById(request, id)),
-                HttpStatus.OK);
+                HttpStatus.OK
+        );
     }
 
 }

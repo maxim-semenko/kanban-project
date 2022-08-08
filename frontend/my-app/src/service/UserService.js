@@ -35,10 +35,10 @@ class UserService {
         })
     }
 
-    async getAllByUsername(username, page = 0, size = 0) {
-        return axios.get(`${API_URL}/byUsername/${username}/all`, {
+    async getAllByEmail(email, page = 0, size = 0) {
+        return axios.get(`${API_URL}/byEmail/${email}`, {
             params: {
-                sort: 'username,asc',
+                sort: 'email,asc',
                 page: page,
                 size: size,
             },
@@ -51,7 +51,7 @@ class UserService {
     async getAllUsersByProjectId(projectId, page = 0, size = 0) {
         return axios.get(`${API_URL}/projects/${projectId}`, {
             params: {
-                // sort: 'username,asc',
+                sort: 'firstname,lastname,asc',
                 page: page,
                 size: size,
             },

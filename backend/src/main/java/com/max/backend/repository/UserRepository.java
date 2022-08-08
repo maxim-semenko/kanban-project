@@ -16,6 +16,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAll(Pageable pageable);
 
+    Page<User> findAllByEmailContaining(Pageable pageable, String email);
+
     @Query("select user from User user where :project member of user.projects")
     Page<User> findAllByProject(Pageable pageable, @Param("project") Project project);
 

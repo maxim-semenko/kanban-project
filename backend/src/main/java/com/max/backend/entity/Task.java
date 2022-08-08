@@ -52,9 +52,14 @@ public class Task {
     @CreatedDate
     private Date createdDate;
 
-    @NotBlank
-    @Size(min = 2, max = 50)
-    private String priority;
+//    @NotNull
+//    @CreatedDate
+    private Date expiryDate;
+
+    @ManyToOne
+    @JoinColumn(name = "priority_id", referencedColumnName = "id")
+    @NotNull
+    private Priority priority;
 
     @ManyToOne
     @JoinColumn(name = "project_id", referencedColumnName = "id")
@@ -73,7 +78,7 @@ public class Task {
             joinColumns = {@JoinColumn(name = "task_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
-    @JsonIgnore
+//    @JsonIgnore
     @ToString.Exclude
     private List<User> executors = new ArrayList<>();
 

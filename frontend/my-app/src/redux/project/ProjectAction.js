@@ -21,6 +21,11 @@ const updatedProjectSuccess = (project) => ({
     payload: project,
 })
 
+const updatedProjectSelfSuccess = (project) => ({
+    type: types.UPDATE_PROJECT_BY_ID_SELF,
+    payload: project,
+})
+
 const deletedProjectSuccess = (projectId) => ({
     type: types.DELETE_PROJECT_BY_ID,
     payload: projectId,
@@ -92,6 +97,23 @@ export function createProject(project) {
             ProjectService.createProject(project)
                 .then((response) => {
                     dispatch(createdProjectSuccess(response.data))
+                    console.log(response)
+                    return resolve(response);
+                })
+                .catch(error => {
+                    console.log(error)
+                    return reject(error);
+                })
+        })
+    };
+}
+
+export function updateProjectById(request, id) {
+    return (dispatch) => {
+        return new Promise((resolve, reject) => {
+            ProjectService.updateProject(request, id)
+                .then((response) => {
+                    dispatch(updatedProjectSelfSuccess(response.data))
                     console.log(response)
                     return resolve(response);
                 })

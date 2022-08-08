@@ -15,7 +15,7 @@ import java.util.List;
 @ToString
 public class CreateProjectRequest {
 
-    @Size(min = 2, max = 128)
+    @Size(min = 2, max = 50)
     @NotBlank
     private String name;
 
@@ -25,9 +25,6 @@ public class CreateProjectRequest {
 
     @NotNull
     private Long creatorId;
-
-//    @Size(min = 1, max = 50)
-//    private List<Long> membersId = new ArrayList<>();
 
     @Size(min = 1, max = 10, message = "projectStatuses size must be between 1 and 10")
     private List<CreateProjectStatusRequest> projectStatuses = new ArrayList<>();

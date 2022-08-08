@@ -31,6 +31,7 @@ function CabinetPage() {
                 <CreateUpdateProjectModal
                     show={showCreateUpdateProjectModal}
                     onHide={() => setShowCreateUpdateProjectModal(false)}
+                    method={"create"}
                 />
             )
         }

@@ -1,75 +1,49 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import {FixedSizeList} from 'react-window';
-import {Avatar, Button, IconButton, ListItemAvatar, Typography} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import ProjectMemberItem from "./ProjectMemberItem";
 
 
 export default function ProjectMembersList(props) {
+    const currentUser = JSON.parse(localStorage.getItem("user"))
+    const [members, setMembers] = useState([])
+
+    useEffect(() => {
+        let array = props.list.filter(item => item.id !== props.project.creator.id)
+        setMembers(array)
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     function renderRow({data, index, style}) {
-        const member = data[index];
-
         return (
-            <ListItem
+            <ProjectMemberItem
+                member={data[index]}
+                index={index}
                 style={style}
-                key={index}
-                component="div"
-                disablePadding
-                secondaryAction={
-                    props.project.creator.id !== member.id ?
-                        <IconButton edge="end">
-                            <Button color={"error"} variant={"contained"}>
-                                Delete member
-                            </Button>
-                            {/*<DeleteIcon*/}
-                            {/*    // onClick={() => handleRemoveComment(comment.id)}*/}
-                            {/*/>*/}
-                        </IconButton>
-                        :
-                        null
-                }
-            >
-                <ListItemButton>
-                    <ListItemAvatar><Avatar/></ListItemAvatar>
-                    <ListItemText
-                        primary={
-                            <b>
-                                {member.firstname}{' '}{member.lastname}{' '}
-                                {props.project.creator.id === member.id ? '(Creator)' : ''}
-                            </b>
-                        }
-                        secondary={
-                            <React.Fragment>
-                                <Typography
-                                    sx={{display: 'inline'}}
-                                    component="span"
-                                    variant="body2"
-                                    color="text.primary"
-                                >
-                                    {member.speciality}
-                                </Typography>
-                            </React.Fragment>
-                        }
-                    />
-                </ListItemButton>
-            </ListItem>
-        );
+                project={props.project}
+                currentUser={currentUser}
+                openRemoveDialog={props.openRemoveDialog}
+            />
+        )
     }
 
     return (
         <Box
             style={{marginBottom: "20px"}}
-            sx={{width: '100%', height: 400, bgcolor: 'background.paper'}}
+            sx={{width: '100%', height: 90 * members.length, bgcolor: 'background.paper'}}
         >
+            <ProjectMemberItem
+                member={props.project.creator}
+                project={props.project}
+                currentUser={currentUser}
+            />
             <FixedSizeList
-                height={460}
+                height={90 * members.length}
                 itemSize={75}
-                itemCount={props.list.length}
-                itemData={props.list}
+                itemCount={members.length}
+                itemData={members}
                 overscanCount={5}
             >
                 {renderRow}

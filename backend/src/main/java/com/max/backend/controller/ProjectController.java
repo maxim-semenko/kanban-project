@@ -42,16 +42,16 @@ public class ProjectController {
 
 
     @PostMapping("/")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') and #request.creatorId == authentication.principal.id")
     public ResponseEntity<Project> createProject(@RequestBody @Valid CreateProjectRequest request) {
         return new ResponseEntity<>(projectService.create(request), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Project> createProjectById(@PathVariable Long id,
+    public ResponseEntity<Project> updateProjectById(@PathVariable Long id,
                                                      @RequestBody @Valid UpdateProjectRequest request) {
-        return new ResponseEntity<>(projectService.updateById(request, id), HttpStatus.CREATED);
+        return new ResponseEntity<>(projectService.updateById(request, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -59,4 +59,17 @@ public class ProjectController {
     public ResponseEntity<Project> deleteById(@PathVariable Long id) {
         return new ResponseEntity<>(projectService.deleteById(id), HttpStatus.OK);
     }
+
+    @PutMapping("/{projectId}/users/{userId}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Project> addUserToProject(@PathVariable Long projectId, @PathVariable Long userId) {
+        return new ResponseEntity<>(projectService.addUser(projectId, userId), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{projectId}/users/{userId}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Project> deleteUserFromProject(@PathVariable Long projectId, @PathVariable Long userId) {
+        return new ResponseEntity<>(projectService.deleteUser(projectId, userId), HttpStatus.OK);
+    }
+
 }

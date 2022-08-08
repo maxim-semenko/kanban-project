@@ -18,4 +18,8 @@ public interface ProjectService {
 
     Project deleteById(Long id);
 
+    Project addUser(Long projectId, Long userId);
+
+    Project deleteUser(Long projectId, Long userId);
+
 }

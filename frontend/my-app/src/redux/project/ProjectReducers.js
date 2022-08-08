@@ -39,6 +39,7 @@ const projectReducers = (state = initialState, action = {}) => {
                 loadingProjects: false,
             }
         case types.GET_PROJECT_BY_ID:
+        case types.UPDATE_PROJECT_BY_ID_SELF:
             return {
                 ...state,
                 project: action.payload,
