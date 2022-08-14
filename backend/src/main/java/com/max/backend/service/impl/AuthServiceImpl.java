@@ -10,7 +10,6 @@ import com.max.backend.entity.User;
 import com.max.backend.entity.enums.RoleEnum;
 import com.max.backend.exception.EmailAlreadyExistsException;
 import com.max.backend.exception.ResourseNotFoundException;
-import com.max.backend.exception.UsernameExistsException;
 import com.max.backend.repository.RoleRepository;
 import com.max.backend.repository.UserRepository;
 import com.max.backend.security.JwtUtils;
@@ -35,8 +34,6 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
-//    private final MailTypeMessageServiceImpl mailTypeMessageService;
-//    private final MailCodeRepository mailCodeRepository;
 
     @Override
     public MessageResponse register(RegisterRequest request) {
@@ -102,7 +99,6 @@ public class AuthServiceImpl implements AuthService {
 //                throw new MailCodeException("Mail code is invalid. Send code again!");
 //            }
 //        }
-
         return new MessageResponse("Password was restore successfully!");
     }
 

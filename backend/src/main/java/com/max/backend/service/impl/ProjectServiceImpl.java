@@ -1,10 +1,8 @@
 package com.max.backend.service.impl;
 
-import com.max.backend.controller.dto.request.CreateProjectRequest;
-import com.max.backend.controller.dto.request.CreateProjectStatusRequest;
-import com.max.backend.controller.dto.request.UpdateProjectRequest;
+import com.max.backend.controller.dto.request.create.CreateProjectRequest;
+import com.max.backend.controller.dto.request.update.UpdateProjectRequest;
 import com.max.backend.entity.Project;
-import com.max.backend.entity.ProjectStatus;
 import com.max.backend.entity.User;
 import com.max.backend.exception.ProjectMemberException;
 import com.max.backend.exception.ResourseNotFoundException;
@@ -18,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,21 +30,18 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project findById(Long id) {
         return projectRepository.findById(id)
-                .orElseThrow(() -> new ResourseNotFoundException("Error: Project not found!"));
+                .orElseThrow(() -> new ResourseNotFoundException("Project not found!"));
     }
 
     @Override
     public Page<Project> findAllByUserId(Pageable pageable, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourseNotFoundException("Error: User not found!"));
-        return projectRepository.findAllByUser(pageable, user);
+        return projectRepository.findAllByUser(pageable, getUserById(userId));
     }
 
     @Transactional
     @Override
     public Project create(CreateProjectRequest createProjectRequest) {
-        User user = userRepository.findById(createProjectRequest.getCreatorId())
-                .orElseThrow(() -> new ResourseNotFoundException("Error: User not found!"));
+        User user = getUserById(createProjectRequest.getCreatorId());
 
         Project project = Project.builder()
                 .name(createProjectRequest.getName())
@@ -56,17 +50,6 @@ public class ProjectServiceImpl implements ProjectService {
                 .members(List.of(user))
                 .createdDate(new Date())
                 .build();
-
-        List<ProjectStatus> projectStatuses = new ArrayList<>();
-        for (CreateProjectStatusRequest projectStatusRequest : createProjectRequest.getProjectStatuses()) {
-            projectStatuses.add(ProjectStatus.builder()
-                    .name(projectStatusRequest.getName())
-                    .limitTotalTask(projectStatusRequest.getLimit())
-                    .project(project)
-                    .build());
-        }
-
-        project.setProjectStatuses(projectStatuses);
 
         return projectRepository.save(project);
     }
@@ -91,9 +74,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project addUser(Long projectId, Long userId) {
         Project project = findById(projectId);
+        User existedUser = getUserById(userId);
 
-        User existedUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourseNotFoundException("Error: User not found!"));
+        if (project.getCreator().getId().equals(userId)) {
+            throw new ProjectMemberException("Creator can't add yourself");
+        }
 
         project.getMembers()
                 .stream()
@@ -107,13 +92,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project deleteUser(Long projectId, Long userId) {
         Project project = findById(projectId);
+        User existedUser = getUserById(userId);
 
         if (project.getCreator().getId().equals(userId)) {
-            throw new ProjectMemberException("Error: creator can't delete yourself");
+            throw new ProjectMemberException("Creator can't delete yourself");
         }
-
-        User existedUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourseNotFoundException("Error: User not found!"));
 
         project.getMembers()
                 .stream()
@@ -123,4 +106,10 @@ public class ProjectServiceImpl implements ProjectService {
 
         return projectRepository.save(project);
     }
+
+    private User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourseNotFoundException("User not found!"));
+    }
+
 }

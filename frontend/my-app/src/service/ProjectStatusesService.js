@@ -19,7 +19,7 @@ class UserService {
         })
     }
 
-    async getProjectById(id) {
+    async getProjectStatusById(id) {
         return axios.get(`${API_URL}/${id}`, {
             headers: {
                 'Authorization': `Bearer ${cookies.get("token")}`,
@@ -27,7 +27,7 @@ class UserService {
         })
     }
 
-    async createProject(request) {
+    async createProjectStatus(request) {
         return axios.post(`${API_URL}/`, request, {
             headers: {
                 'Authorization': `Bearer ${cookies.get("token")}`,
@@ -35,7 +35,15 @@ class UserService {
         })
     }
 
-    async deleteProjectById(postId) {
+    async updateProjectStatus(request, id) {
+        return axios.put(`${API_URL}/${id}`, request, {
+            headers: {
+                'Authorization': `Bearer ${cookies.get("token")}`,
+            }
+        })
+    }
+
+    async deleteProjectStatusById(postId) {
         return axios.delete(`${API_URL}/${postId}`, {
             headers: {
                 'Authorization': `Bearer ${cookies.get("token")}`,

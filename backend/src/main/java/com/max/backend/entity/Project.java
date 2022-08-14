@@ -38,7 +38,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class Project extends BaseEntity{
+@ToString
+public class Project extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,6 +80,7 @@ public class Project extends BaseEntity{
     @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JsonIgnore
     @ToString.Exclude
+    @Size(max = 10)
     private List<ProjectStatus> projectStatuses = new ArrayList<>();
 }
 

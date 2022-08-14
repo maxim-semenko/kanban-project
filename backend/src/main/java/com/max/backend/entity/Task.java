@@ -41,7 +41,7 @@ public class Task {
     private Long id;
 
     @NotBlank
-    @Size(min = 2, max = 15)
+    @Size(min = 2, max = 12)
     private String name;
 
     @NotBlank
@@ -52,7 +52,7 @@ public class Task {
     @CreatedDate
     private Date createdDate;
 
-//    @NotNull
+    //    @NotNull
 //    @CreatedDate
     private Date expiryDate;
 
@@ -72,14 +72,14 @@ public class Task {
     @NotNull
     private ProjectStatus projectStatus;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "tasks_m2m_users",
             joinColumns = {@JoinColumn(name = "task_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
-//    @JsonIgnore
     @ToString.Exclude
+    @Builder.Default
     private List<User> executors = new ArrayList<>();
 
 }

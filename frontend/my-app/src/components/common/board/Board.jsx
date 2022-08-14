@@ -1,29 +1,16 @@
-import React, {createContext, useEffect, useState} from "react";
+import React, {createContext} from "react";
 import ColumnList from "./ColumnList";
 import {Grid} from "@mui/material";
 import "../../../style/Board.css";
-import ProjectStatusesService from "../../../service/ProjectStatusesService";
 import {useDispatch, useSelector} from "react-redux";
-import {getAllTasksByProjectId, updateTaskProjectStatusById} from "../../../redux/task/TaskAction";
-import {useParams} from "react-router-dom";
+import {updateTaskProjectStatusById} from "../../../redux/task/TaskAction";
 
 export const BoardContext = createContext({});
 
 function Board() {
-    const {id} = useParams();
-    const [projectColumns, setProjectColumns] = useState([])
     const dispatch = useDispatch()
-    const {tasks} = useSelector(state => state.dataTasks)
-
-    useEffect(() => {
-        ProjectStatusesService.getAllProjectStatusesByProjectId(id)
-            .then(response => {
-                console.log(response.data)
-                setProjectColumns(response.data.content)
-            })
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    const {tasks, loadingTasks} = useSelector(state => state.dataTasks)
+    const {projectStatuses, loadingProjectStatuses} = useSelector(state => state.dataProjectStatuses)
 
     /// начало!!!
     const onDragStartHandler = (event, taskId, stageId) => {
@@ -34,16 +21,6 @@ function Board() {
         event.dataTransfer.setData("text/plain", JSON.stringify(data));
         event.dataTransfer.effectAllowed = "move";
     };
-
-    // const onTaskContainerDragStartHandler = (event, laneId) => {
-    //     let fromBox = JSON.stringify({laneId: laneId});
-    //     event.dataTransfer.setData("laneId", fromBox);
-    // };
-    // const onTaskContainerDragOverHandler = (event) => {
-    //     if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
-    //         event.preventDefault();
-    //     }
-    // };
 
     // КОНЕЦ
     const onDragOverHandler = (event) => {
@@ -56,33 +33,24 @@ function Board() {
         let droppedData = event.dataTransfer.getData("text/plain");
         droppedData = JSON.parse(droppedData);
         const filterTask = tasks.filter((task) => task.id === droppedData.taskId);
-        const filterColumn = projectColumns.filter((column) => column.id === droppedStageId);
+        const filterColumn = projectStatuses.filter((column) => column.id === droppedStageId);
 
         dispatch(updateTaskProjectStatusById({projectStatus: filterColumn[0]}, filterTask[0].id));
     };
-
-    // const onAddingNewTask = (dataFromChild) => {
-    //     dataFromChild.stage = 1;
-    //     dataFromChild.id = taskState.length + 1;
-    //     dispatch({ type: "ADD_NEW", payload: dataFromChild });
-    // };
 
     const ContextData = {
         onDragStartHandler,
         onDragOverHandler,
         onDropHandler,
-        // onTaskContainerDragStartHandler,
-        // onTaskContainerDropHandler,
-        // onTaskContainerDragOverHandler
     };
 
     return (
         <Grid container spacing={2} style={{marginBottom: "20px"}}>
             <Grid item xs={12} md={12}>
                 {
-                    projectColumns.length !== 0 ?
+                    !loadingTasks && !loadingProjectStatuses ?
                         <BoardContext.Provider value={ContextData}>
-                            <ColumnList stages={projectColumns}/>
+                            <ColumnList/>
                         </BoardContext.Provider>
                         :
                         null

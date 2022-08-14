@@ -1,86 +1,65 @@
-import React, {useContext, useEffect, useState} from "react";
-import {BoardContext} from "./Board";
-import TaskList from "./TaskList";
-import {Card, CardContent, CardHeader, IconButton, ListItemIcon, ListItemText, Menu, MenuItem} from "@mui/material";
-import {useSelector} from "react-redux";
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import RemoveProjectStatusDialog from "../../dialogs/RemoveProjectStatusDialog";
+import {getProjectStatusById} from "../../../redux/project-statuses/ProjectStatusAction";
+import CreateUpdateProjectStatusDialog from "../../dialogs/CreateUpdateProjectStatusDialog";
+import ColumnItem from "./ColumnItem";
 
-function ColumnList(props) {
-    const {onDragOverHandler, onDropHandler} = useContext(BoardContext);
+function ColumnList() {
+    const dispatch = useDispatch()
     const [divWidth, setDivWidth] = useState(0);
-    const {tasks} = useSelector(state => state.dataTasks)
-    const [openMenu, setOpenMenu] = useState(false)
+    const {projectStatuses} = useSelector(state => state.dataProjectStatuses)
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    const [showRemoveProjectStatusDialog, setShowRemoveProjectStatusDialog] = useState(false)
+    const [showCreateUpdateProjectStatusDialog, setShowCreateUpdateProjectStatusDialog] = useState(false)
 
     useEffect(() => {
-        setDivWidth(props.stages.length * 285 + props.stages.length * 16);
-    }, []);
+        setDivWidth(projectStatuses.length * 285 + projectStatuses.length * 17);
+    }, [projectStatuses]);
+
+
+    const showModals = () => {
+        if (showRemoveProjectStatusDialog) {
+            return (
+                <RemoveProjectStatusDialog
+                    show={showRemoveProjectStatusDialog}
+                    onHide={() => setShowRemoveProjectStatusDialog(false)}
+                />
+            )
+        }
+        if (showCreateUpdateProjectStatusDialog) {
+            return (
+                <CreateUpdateProjectStatusDialog
+                    show={showCreateUpdateProjectStatusDialog}
+                    onHide={() => setShowCreateUpdateProjectStatusDialog(false)}
+                    method={"update"}
+                />
+            )
+        }
+    }
+
+    const handleRemoveProjectStatus = (id) => {
+        dispatch(getProjectStatusById(id))
+        setShowRemoveProjectStatusDialog(true)
+    }
+
+    const handleUpdateProjectStatus = (id) => {
+        console.log(id)
+        dispatch(getProjectStatusById(id))
+        setShowCreateUpdateProjectStatusDialog(true)
+    }
 
     return (
         <div className="column-wrapper">
+            {showModals()}
             <div style={{width: divWidth}}>
-                {props.stages.map((column, index) => (
-                    <>
-                        <div className="card-column" key={index}>
-                            <Card style={{textAlign: "left"}}>
-                                <CardHeader
-                                    title={<b style={{fontSize: 20}}>{column.name}</b>}
-                                    subheader={
-                                        <span>
-                                            {tasks.filter(task => task.projectStatus.id === column.id).length}
-                                            /{column.limitTotalTask}
-                                        </span>}
-                                    action={
-                                        <IconButton aria-label="settings" onClick={handleClick}>
-                                            <MoreVertIcon/>
-                                        </IconButton>
-                                    }
-                                    style={{textTransform: "uppercase", textOverflow: "ellipsis"}}
-                                    className={"stage-header"}
-                                />
-                                <CardContent
-                                    onDrop={(event) => onDropHandler(event, column.id)}
-                                    onDragOver={(event) => onDragOverHandler(event)}
-                                >
-                                    <TaskList stage={column} key={column.id}/>
-                                </CardContent>
-                            </Card>
-                            <div>
-                                <Menu
-                                    id="basic-menu"
-                                    anchorEl={anchorEl}
-                                    open={open}
-                                    onClose={handleClose}
-                                    MenuListProps={{
-                                        'aria-labelledby': 'basic-button',
-                                    }}
-                                >
-                                    <MenuItem onClick={handleClose}>
-                                        <ListItemIcon>
-                                            <EditIcon fontSize="medium"/>
-                                        </ListItemIcon>
-                                        <ListItemText>Edit</ListItemText>
-                                    </MenuItem>
-                                    <MenuItem onClick={handleClose}>
-                                        <ListItemIcon>
-                                            <DeleteIcon fontSize="medium"/>
-                                        </ListItemIcon>
-                                        <ListItemText>Delete</ListItemText>
-                                    </MenuItem>
-                                </Menu>
-                            </div>
-                        </div>
-                    </>
+                {projectStatuses.map((column, index) => (
+                    <ColumnItem
+                        key={index}
+                        column={column}
+                        handleUpdateProjectStatus={() => handleUpdateProjectStatus(column.id)}
+                        handleRemoveProjectStatus={() => handleRemoveProjectStatus(column.id)}
+                    />
                 ))}
             </div>
         </div>

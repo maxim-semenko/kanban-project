@@ -42,12 +42,12 @@ const taskReducers = (state = initialState, action = {}) => {
                 task: action.payload,
                 loadingTask: false,
             }
-        // case types.CREATE_PROJECT:
-        //     return {
-        //         ...state,
-        //         projects: [...state.projects.slice(0, 0), action.payload, ...state.projects.slice(0)],
-        //         totalElements: state.totalElements + 1,
-        //     }
+        case types.CREATE_TASK:
+            return {
+                ...state,
+                tasks: [...state.tasks, action.payload],
+                totalElements: state.totalElements + 1,
+            }
         case types.UPDATE_TASK_BY_ID:
             const objIndex = state.tasks.findIndex((item => item.id === action.payload.id));
             let updatedTasks = state.tasks;

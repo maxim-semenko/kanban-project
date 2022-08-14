@@ -1,4 +1,4 @@
-package com.max.backend.controller.dto.request;
+package com.max.backend.controller.dto.request.update;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.max.backend.controller.dto.request;
+package com.max.backend.controller.dto.request.create;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,8 +7,6 @@ import lombok.ToString;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -25,8 +23,5 @@ public class CreateProjectRequest {
 
     @NotNull
     private Long creatorId;
-
-    @Size(min = 1, max = 10, message = "projectStatuses size must be between 1 and 10")
-    private List<CreateProjectStatusRequest> projectStatuses = new ArrayList<>();
 
 }

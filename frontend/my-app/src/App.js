@@ -1,6 +1,5 @@
 import './App.css';
 import {Route, Routes} from "react-router-dom";
-import BoardPage from "./components/pages/user/BoardPage";
 import NotFoundPage from "./components/pages/NotFoundPage";
 import HomePage from "./components/pages/auth/HomePage";
 import ProtectedRoute from "./components/common/ProtectedRoute";
@@ -16,7 +15,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<HomePage/>}/>
                 <Route path="about" element={<AboutPage/>}/>
-                <Route path="board" element={<BoardPage/>}/>
+                {/*<Route path="board" element={<BoardPage/>}/>*/}
                 <Route path="cabinet" element={<ProtectedRoute><CabinetPage/></ProtectedRoute>}/>
                 <Route path="cabinet/edit" element={<ProtectedRoute><EditCabinetPage/></ProtectedRoute>}/>
                 <Route path="project/:id" element={<ProtectedRoute><AboutProjectPage/></ProtectedRoute>}/>

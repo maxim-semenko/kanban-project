@@ -1,14 +1,17 @@
 package com.max.backend.service.impl;
 
-import com.max.backend.controller.dto.request.CreateTaskRequest;
-import com.max.backend.controller.dto.request.UpdateTaskProjectStatusRequest;
-import com.max.backend.controller.dto.request.UpdateTaskRequest;
+import com.max.backend.controller.dto.request.create.CreateTaskRequest;
+import com.max.backend.controller.dto.request.update.UpdateTaskProjectStatusRequest;
+import com.max.backend.controller.dto.request.update.UpdateTaskRequest;
+import com.max.backend.entity.Priority;
 import com.max.backend.entity.Project;
 import com.max.backend.entity.ProjectStatus;
 import com.max.backend.entity.Task;
 import com.max.backend.exception.ResourseNotFoundException;
 import com.max.backend.exception.TaskException;
+import com.max.backend.repository.PriorityRepository;
 import com.max.backend.repository.ProjectRepository;
+import com.max.backend.repository.ProjectStatusRepository;
 import com.max.backend.repository.TaskRepository;
 import com.max.backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Objects;
 
 @Service
@@ -24,23 +28,35 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
+    private final PriorityRepository priorityRepository;
+    private final ProjectStatusRepository projectStatusRepository;
 
     @Override
     public Task findById(Long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new ResourseNotFoundException("Error: Task not found!"));
+                .orElseThrow(() -> new ResourseNotFoundException("Task not found!"));
     }
 
     @Override
     public Page<Task> findAllByProjectId(Pageable pageable, Long projectId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new ResourseNotFoundException("Error: Project not found!"));
-        return taskRepository.findAllByProject(pageable, project);
+        return taskRepository.findAllByProject(pageable, getProjectById(projectId));
+    }
+
+    @Override
+    public Page<Priority> findAllTaskPriorities(Pageable pageable) {
+        return priorityRepository.findAll(pageable);
     }
 
     @Override
     public Task create(CreateTaskRequest createTaskRequest) {
         Task task = Task.builder()
+                .name(createTaskRequest.getName())
+                .description(createTaskRequest.getDescription())
+                .projectStatus(getProjectStatusById(createTaskRequest.getProjectStatusId()))
+                .priority(getPriorityById(createTaskRequest.getPriorityId()))
+                .project(getProjectById(createTaskRequest.getProjectId()))
+                .expiryDate(createTaskRequest.getExpiryDate())
+                .createdDate(new Date())
                 .build();
 
         return taskRepository.save(task);
@@ -48,7 +64,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task updateById(UpdateTaskRequest updateTaskRequest, Long id) {
-        return null;
+        Task task = findById(id);
+        task.setName(updateTaskRequest.getName());
+        task.setDescription(updateTaskRequest.getDescription());
+        task.setPriority(getPriorityById(updateTaskRequest.getPriorityId()));
+        task.setExpiryDate(updateTaskRequest.getExpiryDate());
+
+        return taskRepository.save(task);
     }
 
     @Override
@@ -69,5 +91,20 @@ public class TaskServiceImpl implements TaskService {
         Task task = findById(id);
         taskRepository.delete(task);
         return task;
+    }
+
+    private Project getProjectById(Long projectId) {
+        return projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourseNotFoundException("Project not found!"));
+    }
+
+    private Priority getPriorityById(Long priorityId) {
+        return priorityRepository.findById(priorityId)
+                .orElseThrow(() -> new ResourseNotFoundException("Priority not found!"));
+    }
+
+    private ProjectStatus getProjectStatusById(Long projectStatusId) {
+        return projectStatusRepository.findById(projectStatusId)
+                .orElseThrow(() -> new ResourseNotFoundException("ProjectStatus not found!"));
     }
 }

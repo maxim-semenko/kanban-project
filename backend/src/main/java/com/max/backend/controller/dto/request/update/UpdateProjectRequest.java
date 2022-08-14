@@ -1,8 +1,7 @@
-package com.max.backend.controller.dto.request;
+package com.max.backend.controller.dto.request.update;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

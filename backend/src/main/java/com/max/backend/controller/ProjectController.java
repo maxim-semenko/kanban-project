@@ -1,7 +1,7 @@
 package com.max.backend.controller;
 
-import com.max.backend.controller.dto.request.CreateProjectRequest;
-import com.max.backend.controller.dto.request.UpdateProjectRequest;
+import com.max.backend.controller.dto.request.create.CreateProjectRequest;
+import com.max.backend.controller.dto.request.update.UpdateProjectRequest;
 import com.max.backend.entity.Project;
 import com.max.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;

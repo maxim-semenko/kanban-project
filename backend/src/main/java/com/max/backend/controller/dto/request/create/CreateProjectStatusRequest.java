@@ -1,9 +1,10 @@
-package com.max.backend.controller.dto.request;
+package com.max.backend.controller.dto.request.create;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -19,5 +20,9 @@ public class CreateProjectStatusRequest {
 
     @NotNull
     @Min(1)
-    private Long limit;
+    @Max(100)
+    private Long limitTotalTask;
+
+    @NotNull
+    private Long projectId;
 }

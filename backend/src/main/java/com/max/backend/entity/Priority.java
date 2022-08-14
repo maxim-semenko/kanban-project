@@ -1,7 +1,6 @@
 package com.max.backend.entity;
 
 import com.max.backend.entity.enums.PriorityEnum;
-import com.max.backend.entity.enums.RoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

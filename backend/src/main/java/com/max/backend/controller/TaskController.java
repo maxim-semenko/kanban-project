@@ -1,8 +1,9 @@
 package com.max.backend.controller;
 
-import com.max.backend.controller.dto.request.CreateTaskRequest;
-import com.max.backend.controller.dto.request.UpdateTaskProjectStatusRequest;
-import com.max.backend.controller.dto.request.UpdateTaskRequest;
+import com.max.backend.controller.dto.request.create.CreateTaskRequest;
+import com.max.backend.controller.dto.request.update.UpdateTaskProjectStatusRequest;
+import com.max.backend.controller.dto.request.update.UpdateTaskRequest;
+import com.max.backend.entity.Priority;
 import com.max.backend.entity.Task;
 import com.max.backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,12 @@ public class TaskController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Page<Task>> findTasksByProjectId(@PathVariable Long projectId, Pageable pageable) {
         return new ResponseEntity<>(taskService.findAllByProjectId(pageable, projectId), HttpStatus.OK);
+    }
+
+    @GetMapping("/priorities")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Page<Priority>> findAllPriorities(Pageable pageable) {
+        return new ResponseEntity<>(taskService.findAllTaskPriorities(pageable), HttpStatus.OK);
     }
 
     @PostMapping("/")

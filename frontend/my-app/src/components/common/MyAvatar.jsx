@@ -32,7 +32,7 @@ function stringAvatar(name) {
 
 function MyAvatar(props) {
     return (
-        <Avatar {...stringAvatar(props.name)} />
+        <Avatar {...stringAvatar(props.name)}/>
     );
 }
 

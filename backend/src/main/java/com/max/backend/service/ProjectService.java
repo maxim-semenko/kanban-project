@@ -1,7 +1,7 @@
 package com.max.backend.service;
 
-import com.max.backend.controller.dto.request.CreateProjectRequest;
-import com.max.backend.controller.dto.request.UpdateProjectRequest;
+import com.max.backend.controller.dto.request.create.CreateProjectRequest;
+import com.max.backend.controller.dto.request.update.UpdateProjectRequest;
 import com.max.backend.entity.Project;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

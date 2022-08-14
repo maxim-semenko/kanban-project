@@ -157,13 +157,18 @@ function AboutProjectPage(props) {
                                         <ProjectInfo/>
                                         <h3>Project members:</h3>
                                         <hr style={{margin: "0px 0px 10px 0px"}}/>
-                                        <Button color={"success"}
-                                                variant={"contained"}
-                                                style={{marginBottom: "10px"}}
-                                                onClick={() => setShowAddMemberModal(true)}
-                                        >
-                                            Add member
-                                        </Button>
+                                        {
+                                            currentUser.id === project.creator.id ?
+                                                <Button color={"success"}
+                                                        variant={"contained"}
+                                                        style={{marginBottom: "10px"}}
+                                                        onClick={() => setShowAddMemberModal(true)}
+                                                >
+                                                    Add member
+                                                </Button>
+                                                :
+                                                null
+                                        }
                                         {
                                             users.length !== 0 ?
                                                 <ProjectMembersList

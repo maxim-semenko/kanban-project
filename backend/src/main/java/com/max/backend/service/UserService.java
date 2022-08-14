@@ -1,9 +1,9 @@
 package com.max.backend.service;
 
-import com.max.backend.controller.dto.request.UpdatePasswordRequest;
-import com.max.backend.controller.dto.request.UpdateUserIsNonLockedRequest;
-import com.max.backend.controller.dto.request.UpdateUserRequest;
-import com.max.backend.controller.dto.request.UpdateUserRolesRequest;
+import com.max.backend.controller.dto.request.update.UpdatePasswordRequest;
+import com.max.backend.controller.dto.request.update.UpdateUserIsNonLockedRequest;
+import com.max.backend.controller.dto.request.update.UpdateUserRequest;
+import com.max.backend.controller.dto.request.update.UpdateUserRolesRequest;
 import com.max.backend.controller.dto.response.JwtResponse;
 import com.max.backend.controller.dto.response.MessageResponse;
 import com.max.backend.entity.User;

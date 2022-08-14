@@ -1,18 +1,20 @@
-package com.max.backend.controller.dto.request;
+package com.max.backend.controller.dto.request.update;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 @Getter
 @Setter
-public class CreateTaskRequest {
-    @Size(min = 2, max = 15)
+@ToString
+public class UpdateTaskRequest {
+
+    @Size(min = 2, max = 12)
     @NotBlank
     private String name;
 
@@ -20,10 +22,9 @@ public class CreateTaskRequest {
     @NotBlank
     private String description;
 
-    @NotBlank
-    private String priority;
+    @NotNull
+    private Long priorityId;
 
     @NotNull
-    private Long projectId;
-    
+    private Date expiryDate;
 }
