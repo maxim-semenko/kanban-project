@@ -1,5 +1,6 @@
 package com.max.backend.service.impl;
 
+import com.max.backend.SecurityUtil;
 import com.max.backend.controller.dto.request.create.CreateTaskRequest;
 import com.max.backend.controller.dto.request.update.UpdateTaskProjectStatusRequest;
 import com.max.backend.controller.dto.request.update.UpdateTaskRequest;
@@ -7,12 +8,16 @@ import com.max.backend.entity.Priority;
 import com.max.backend.entity.Project;
 import com.max.backend.entity.ProjectStatus;
 import com.max.backend.entity.Task;
+import com.max.backend.entity.User;
+import com.max.backend.exception.ProjectMemberException;
+import com.max.backend.exception.ResourseForbiddenException;
 import com.max.backend.exception.ResourseNotFoundException;
 import com.max.backend.exception.TaskException;
 import com.max.backend.repository.PriorityRepository;
 import com.max.backend.repository.ProjectRepository;
 import com.max.backend.repository.ProjectStatusRepository;
 import com.max.backend.repository.TaskRepository;
+import com.max.backend.repository.UserRepository;
 import com.max.backend.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +32,7 @@ import java.util.Objects;
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final PriorityRepository priorityRepository;
     private final ProjectStatusRepository projectStatusRepository;
@@ -65,6 +71,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task updateById(UpdateTaskRequest updateTaskRequest, Long id) {
         Task task = findById(id);
+        if (!task.getProject().getCreator().getEmail().equals(SecurityUtil.getCurrentUsername())) {
+            throw new ResourseForbiddenException("Only project creator can update task!");
+        }
+
         task.setName(updateTaskRequest.getName());
         task.setDescription(updateTaskRequest.getDescription());
         task.setPriority(getPriorityById(updateTaskRequest.getPriorityId()));
@@ -76,6 +86,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task updateProjectStatusById(UpdateTaskProjectStatusRequest updateProjectStatusRequest, Long id) {
         Task task = findById(id);
+        if (!task.getProject().getMembers().contains(getUserByEmail(SecurityUtil.getCurrentUsername()))) {
+            throw new ResourseForbiddenException("Only project member can update status of task!");
+        }
+
         ProjectStatus projectStatus = updateProjectStatusRequest.getProjectStatus();
         Long countTasksByProjectStatus = taskRepository.countAllByProjectStatus(projectStatus);
 
@@ -91,6 +105,50 @@ public class TaskServiceImpl implements TaskService {
         Task task = findById(id);
         taskRepository.delete(task);
         return task;
+    }
+
+    @Override
+    public Task addUser(Long taskId, Long userId) {
+        Task task = findById(taskId);
+        User existedUser = getUserById(userId);
+
+        if (!task.getProject().getMembers().contains(existedUser)) {
+            throw new ProjectMemberException("User is not a member of project!");
+        }
+
+        if (!task.getExecutors().isEmpty()) {
+            task.getExecutors()
+                    .stream()
+                    .filter(user -> !user.equals(existedUser)).findFirst()
+                    .orElseThrow(() -> new ProjectMemberException("User is already exists in task!"));
+        }
+        task.getExecutors().add(existedUser);
+
+        return taskRepository.save(task);
+    }
+
+    @Override
+    public Task removeUser(Long taskId, Long userId) {
+        Task task = findById(taskId);
+        User existedUser = getUserById(userId);
+
+        task.getExecutors()
+                .stream()
+                .filter(user -> user.equals(existedUser)).findFirst()
+                .orElseThrow(() -> new ProjectMemberException("User not found in task!"));
+        task.getExecutors().remove(existedUser);
+
+        return taskRepository.save(task);
+    }
+
+    private User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourseNotFoundException("User not found!"));
+    }
+
+    private User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourseNotFoundException("User not found!"));
     }
 
     private Project getProjectById(Long projectId) {

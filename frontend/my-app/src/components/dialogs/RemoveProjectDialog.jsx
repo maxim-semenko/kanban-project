@@ -6,8 +6,7 @@ import Button from "@mui/material/Button";
 import {useDispatch, useSelector} from "react-redux";
 import Box from "@mui/material/Box";
 import {deleteProjectById} from "../../redux/project/ProjectAction";
-import {useHistory} from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from "react-router-dom";
 
 function RemoveProjectDialog(props) {
     const dispatch = useDispatch()

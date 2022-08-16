@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,16 +31,17 @@ public class ProjectController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Project> findProjectsById(@PathVariable Long id) {
+    @PostAuthorize("@mySecurityService.userIsMemberOfProject(returnObject.body)")
+    public ResponseEntity<Project> findProjectById(@PathVariable Long id) {
         return new ResponseEntity<>(projectService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping("/users/{userId}")
     @PreAuthorize("hasRole('USER')")
+    @PostAuthorize("@mySecurityService.userIsMemberOfProject(returnObject.body.toList().get(0))")
     public ResponseEntity<Page<Project>> findProjectsByUserId(@PathVariable Long userId, Pageable pageable) {
         return new ResponseEntity<>(projectService.findAllByUserId(pageable, userId), HttpStatus.OK);
     }
-
 
     @PostMapping("/")
     @PreAuthorize("hasRole('USER') and #request.creatorId == authentication.principal.id")
@@ -68,8 +70,8 @@ public class ProjectController {
 
     @DeleteMapping("/{projectId}/users/{userId}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Project> deleteUserFromProject(@PathVariable Long projectId, @PathVariable Long userId) {
-        return new ResponseEntity<>(projectService.deleteUser(projectId, userId), HttpStatus.OK);
+    public ResponseEntity<Project> removeUserFromProject(@PathVariable Long projectId, @PathVariable Long userId) {
+        return new ResponseEntity<>(projectService.removeUser(projectId, userId), HttpStatus.OK);
     }
 
 }

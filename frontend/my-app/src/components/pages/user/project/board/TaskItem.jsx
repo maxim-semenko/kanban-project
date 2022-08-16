@@ -10,17 +10,18 @@ import {
     ListItemIcon,
     ListItemText,
     Menu,
-    MenuItem,
-    Typography
+    MenuItem
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import dayjs from 'dayjs';
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import MyAvatar from "../MyAvatar";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import MyAvatar from "../../../../common/MyAvatar";
+import {addUserToTask, removeUserFromTask} from "../../../../../redux/task/TaskAction";
 
 function TaskItem(props) {
+    const dispatch = useDispatch()
     const currentUser = JSON.parse(localStorage.getItem("user"))
     const {project} = useSelector(state => state.dataProjects)
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -59,9 +60,30 @@ function TaskItem(props) {
         props.handleRemoveTask()
     }
 
+    const TakeRefuseTaskButton = (props) => {
+        const isContain = props.task.executors.find(item => item.id === currentUser.id)
+        return (
+            <Button
+                size="medium"
+                variant={"contained"}
+                color={isContain ? 'error' : 'success'}
+                style={{marginTop: "-10px"}}
+                onClick={isContain ?
+                    () => dispatch(removeUserFromTask(props.task.id, currentUser.id)) :
+                    () => dispatch(addUserToTask(props.task.id, currentUser.id))
+                }
+            >
+                {isContain ? 'Refuse task' : 'Take task'}
+            </Button>
+        )
+    }
+
     return (
         <Card key={props.task.id} className="card-task"
-              style={{textAlign: "left"}}
+              style={{
+                  textAlign: "left",
+                  backgroundColor: dayjs(props.task.expiryDate).isAfter(dayjs(new Date())) ? "#a65656" : "#6c757d"
+              }}
         >
             <CardHeader
                 style={{
@@ -76,7 +98,7 @@ function TaskItem(props) {
                 }
             />
             <CardContent style={{paddingTop: "0px"}}>
-                <Typography variant="body2">
+                <div style={{fontSize: "14px"}}>
                     <b>Description: </b>{props.task.description.substring(0, 20).toLowerCase()}
                     {props.task.description.length > 20 ? '...' : ''}
                     <br/>
@@ -102,7 +124,7 @@ function TaskItem(props) {
                                 {
                                     props.task.executors
                                         .map((executor, index) => (
-                                            <MyAvatar name={`${executor.firstname} ${executor.lastname}`}/>
+                                            <MyAvatar key={index} name={`${executor.firstname} ${executor.lastname}`}/>
                                         ))
                                 }
                             </AvatarGroup>
@@ -110,22 +132,21 @@ function TaskItem(props) {
                             <div style={{minHeight: "23.99px"}}>Nobody execute the task!</div>
                     }
                     <br style={{clear: "both"}}/>
-                </Typography>
+                </div>
             </CardContent>
             <CardActions>
-                <Button size="medium" variant={"contained"} style={{marginTop: "-10px"}}>More</Button>
                 <Button
                     size="medium"
                     variant={"contained"}
-                    color={props.task.executors.find(item => item.id === currentUser.id) ? 'error' : 'success'}
                     style={{marginTop: "-10px"}}
+                    onClick={props.handleAboutTask}
                 >
-                    {props.task.executors.find(item => item.id === currentUser.id) ? 'Refuse task' : 'Take task'}
+                    More
                 </Button>
+                <TakeRefuseTaskButton task={props.task}/>
             </CardActions>
             <div>
                 <Menu
-                    id="basic-menu"
                     anchorEl={anchorEl}
                     open={open}
                     onClose={handleClose}

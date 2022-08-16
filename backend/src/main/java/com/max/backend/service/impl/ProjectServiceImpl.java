@@ -7,7 +7,6 @@ import com.max.backend.entity.User;
 import com.max.backend.exception.ProjectMemberException;
 import com.max.backend.exception.ResourseNotFoundException;
 import com.max.backend.repository.ProjectRepository;
-import com.max.backend.repository.ProjectStatusRepository;
 import com.max.backend.repository.UserRepository;
 import com.max.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ import java.util.List;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
-    private final ProjectStatusRepository projectStatusRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -38,7 +36,6 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.findAllByUser(pageable, getUserById(userId));
     }
 
-    @Transactional
     @Override
     public Project create(CreateProjectRequest createProjectRequest) {
         User user = getUserById(createProjectRequest.getCreatorId());
@@ -55,6 +52,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public Project updateById(UpdateProjectRequest updateProjectRequest, Long id) {
         Project project = findById(id);
         project.setName(updateProjectRequest.getName());
@@ -90,7 +88,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project deleteUser(Long projectId, Long userId) {
+    public Project removeUser(Long projectId, Long userId) {
         Project project = findById(projectId);
         User existedUser = getUserById(userId);
 

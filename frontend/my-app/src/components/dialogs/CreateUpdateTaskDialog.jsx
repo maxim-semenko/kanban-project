@@ -157,7 +157,6 @@ function CreateUpdateTaskDialog(props) {
                     </IconButton>
                     <Typography sx={{ml: 2, flex: 1}} variant="h6" component="div">
                         {props.method === "create" ? 'Create task' : 'Update task'}
-
                     </Typography>
                     <Button
                         onClick={handleUpdateCreateProject}
@@ -238,7 +237,7 @@ function CreateUpdateTaskDialog(props) {
                                         <InputLabel>Task priority</InputLabel>
                                         <Select
                                             defaultValue={
-                                                props.method === "update" && priority !== null ? priority.id : null
+                                                props.method === "update" && priority !== null ? priority.id : ""
                                             }
                                             label="Task priority"
                                             onChange={handlerChangePriority}
@@ -256,7 +255,7 @@ function CreateUpdateTaskDialog(props) {
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <MobileDateTimePicker
                                             label="Task Expiry date"
-                                            value={expiryDate}
+                                            value={expiryDate == null ? '' : expiryDate}
                                             onChange={handlerChangeExpiryDate}
                                             renderInput={(params) =>
                                                 <TextField
@@ -266,7 +265,6 @@ function CreateUpdateTaskDialog(props) {
                                                     helperText={expiryDateError ? expiryDateError : ''}
                                                 />
                                             }
-                                            date={null}
                                             minDateTime={dayjs()}
                                         />
                                     </LocalizationProvider>

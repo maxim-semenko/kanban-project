@@ -21,11 +21,9 @@ function ProjectMemberItem(props) {
         if (creatorId === currentUserId) {
             if (creatorId !== memberId) {
                 return (
-                    <IconButton edge="end">
                         <Button color={"error"} variant={"contained"} onClick={() => removeMember(memberId)}>
                             Remove member
                         </Button>
-                    </IconButton>
                 )
             }
         }
@@ -37,8 +35,7 @@ function ProjectMemberItem(props) {
             key={props.index}
             component="div"
             disablePadding
-            secondaryAction={showRemoveMemberButton(props.project.creator.id, member.id, props.currentUser.id)
-            }
+            secondaryAction={showRemoveMemberButton(props.project.creator.id, member.id, props.currentUser.id)}
         >
             <ListItemButton>
                 <ListItemAvatar>

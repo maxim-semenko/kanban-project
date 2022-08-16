@@ -37,13 +37,12 @@ function HomePage(props) {
                     <Row style={{paddingBottom: "3%"}}>
                         <Col><img alt="" src={image} width="100%"/></Col>
                         <Col>
-                            <p style={{fontSize: "2.1vw", textAlign: "justify"}}>
-                                <h2>Every day our company does its best to make our product more better. Our development
-                                    team is constantly implementing useful functionality in order to enable our clients
-                                    to manage the development of their project efficiently and conveniently.</h2>
-
-                            </p>
-                            {/*<Link to="/about"><Button variant="success" size="lg">Подробнее о нас</Button></Link>*/}
+                            <div style={{fontSize: "2.1vw", textAlign: "justify"}}>
+                                <h2> Every day our company does its best to make our product more better. Our
+                                    development team is constantly implementing useful functionality in order to enable
+                                    our clients to manage the development of their project efficiently and conveniently.
+                                </h2>
+                            </div>
                         </Col>
                     </Row>
                 </Container>

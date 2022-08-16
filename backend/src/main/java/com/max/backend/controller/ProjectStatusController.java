@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,12 +31,14 @@ public class ProjectStatusController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
+    @PostAuthorize("@mySecurityService.userIsMemberOfProject(returnObject.body.project)")
     public ResponseEntity<ProjectStatus> findProjectStatusById(@PathVariable Long id) {
         return new ResponseEntity<>(projectStatusService.findById(id), HttpStatus.OK);
     }
 
     @GetMapping("/projects/{projectId}")
     @PreAuthorize("hasRole('USER')")
+    @PostAuthorize("@mySecurityService.userIsMemberOfProject(returnObject.body.toList().get(0).project)")
     public ResponseEntity<Page<ProjectStatus>> findAllProjectStatusesByProjectId(@PathVariable Long projectId,
                                                                                  Pageable pageable) {
         return new ResponseEntity<>(projectStatusService.findAllByProjectId(pageable, projectId), HttpStatus.OK);
@@ -44,9 +47,8 @@ public class ProjectStatusController {
     @PostMapping("/")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ProjectStatus> createProjectStatus(@Valid @RequestBody CreateProjectStatusRequest request) {
-        return new ResponseEntity<>(projectStatusService.create(request), HttpStatus.OK);
+        return new ResponseEntity<>(projectStatusService.create(request), HttpStatus.CREATED);
     }
-
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER')")

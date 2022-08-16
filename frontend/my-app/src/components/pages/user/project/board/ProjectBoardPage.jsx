@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import NavigationBar from "../../../../common/NavigationBar";
 import {Link, useParams} from "react-router-dom";
 import {Button, ButtonGroup, CircularProgress, Container} from "@mui/material";
-import Board from "../../../../common/board/Board";
 import "../../../../../style/Board.css";
 import {useDispatch, useSelector} from "react-redux";
 import {getAllTasksByProjectId} from "../../../../../redux/task/TaskAction";
@@ -11,8 +10,9 @@ import {getAllProjectStatusesByProjectId} from "../../../../../redux/project-sta
 import CreateUpdateProjectStatusDialog from "../../../../dialogs/CreateUpdateProjectStatusDialog";
 import {getProjectById} from "../../../../../redux/project/ProjectAction";
 import Box from "@mui/material/Box";
+import Board from "./Board";
 
-function ProjectBoard(props) {
+function ProjectBoardPage(props) {
     const {id} = useParams();
     const currentUser = JSON.parse(localStorage.getItem("user"))
     const {project, loadingProject} = useSelector(state => state.dataProjects)
@@ -56,45 +56,40 @@ function ProjectBoard(props) {
     const Content = () => {
         if (!loadingProject) {
             return (
-                <Container maxWidth={false} style={{padding: "0 12px 0 12px"}}>
-                    <div style={{textAlign: "left", marginTop: "15px"}}>
-                        <ButtonGroup disableElevation variant="contained">
-                            <Link to={`/project/${id}`} style={{textDecoration: "none"}}>
-                                <Button size={"large"} color={"error"} style={{borderRadius: "0px"}}>
-                                    Back to project
-                                </Button>
-                            </Link>
-                            {
-                                currentUser.id === project.creator.id ?
-                                    <>
-                                        < Button
-                                            size={"large"}
-                                            color={"primary"}
-                                            style={{borderRadius: "0px"}}
-                                            onClick={() => setShowCreateUpdateProjectStatusDialog(true)}
-                                            disabled={projectStatuses.length === 10 && !loadingProjectStatuses}
-                                        >
-                                            Add column
-                                        </Button>
-                                        <Button
-                                            size={"large"}
-                                            color={"success"}
-                                            style={{borderRadius: "0px"}}
-                                            onClick={() => setShowCreateUpdateTaskDialog(true)}
-                                            disabled={projectStatuses.length === 0 && !loadingProjectStatuses}
-                                        >
-                                            Add task
-                                        </Button>
-                                    </>
-                                    :
-                                    null
-                            }
-                        </ButtonGroup>
-                    </div>
-                    <hr/>
-                    <Board/>
-                </Container>
-
+                <div style={{textAlign: "left", marginTop: "15px"}}>
+                    <ButtonGroup disableElevation variant="contained">
+                        <Link to={`/project/${id}`} style={{textDecoration: "none"}}>
+                            <Button size={"large"} color={"error"} style={{borderRadius: "0px"}}>
+                                Back to project
+                            </Button>
+                        </Link>
+                        {
+                            currentUser.id === project.creator.id ?
+                                <>
+                                    < Button
+                                        size={"large"}
+                                        color={"primary"}
+                                        style={{borderRadius: "0px"}}
+                                        onClick={() => setShowCreateUpdateProjectStatusDialog(true)}
+                                        disabled={projectStatuses.length === 10 && !loadingProjectStatuses}
+                                    >
+                                        Add column
+                                    </Button>
+                                    <Button
+                                        size={"large"}
+                                        color={"success"}
+                                        style={{borderRadius: "0px"}}
+                                        onClick={() => setShowCreateUpdateTaskDialog(true)}
+                                        disabled={projectStatuses.length === 0 && !loadingProjectStatuses}
+                                    >
+                                        Add task
+                                    </Button>
+                                </>
+                                :
+                                null
+                        }
+                    </ButtonGroup>
+                </div>
             )
         } else {
             return <Box display="flex" justifyContent="center"><CircularProgress/></Box>
@@ -106,9 +101,13 @@ function ProjectBoard(props) {
         <div>
             {showModals()}
             <NavigationBar/>
-            <Content/>
+            <Container maxWidth={false} style={{padding: "0 12px 0 12px"}}>
+                <Content/>
+                <hr/>
+                <Board/>
+            </Container>
         </div>
     );
 }
 
-export default ProjectBoard;
+export default ProjectBoardPage;

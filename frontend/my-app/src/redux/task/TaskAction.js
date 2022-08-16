@@ -11,7 +11,6 @@ const gotTaskSuccess = (task) => ({
     payload: task,
 })
 
-
 const createdTaskSuccess = (task) => ({
     type: types.CREATE_TASK,
     payload: task,
@@ -26,17 +25,6 @@ const deletedTaskSuccess = (taskId) => ({
     type: types.DELETE_TASK_BY_ID,
     payload: taskId,
 })
-
-//
-// export const setCurrentPage = (page) => ({
-//     type: types.SET_CURRENT_PAGE_PROJECTS,
-//     payload: page
-// })
-//
-// export const setSizePage = (size) => ({
-//     type: types.SET_SIZE_PAGE_PROJECTS,
-//     payload: size
-// })
 
 export const setLoadingTasks = (loading) => ({
     type: types.SET_LOADING_TASKS,
@@ -125,6 +113,32 @@ export function updateTaskById(request, taskId) {
 export const updateTaskProjectStatusById = (request, taskId) => {
     return function (dispatch) {
         TaskService.updateTaskProjectStatusById(request, taskId)
+            .then(response => {
+                dispatch(updatedTaskSuccess(response.data))
+                console.log(response.data)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+}
+
+export const addUserToTask = (taskId, userId) => {
+    return function (dispatch) {
+        TaskService.addUserToTaskByTaskIdAndUserId(taskId, userId)
+            .then(response => {
+                dispatch(updatedTaskSuccess(response.data))
+                console.log(response.data)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+}
+
+export const removeUserFromTask = (taskId, userId) => {
+    return function (dispatch) {
+        TaskService.removeUserFromTaskByTaskIdAndUserId(taskId, userId)
             .then(response => {
                 dispatch(updatedTaskSuccess(response.data))
                 console.log(response.data)

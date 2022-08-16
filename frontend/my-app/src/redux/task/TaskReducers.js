@@ -15,18 +15,18 @@ const initialState = {
 const taskReducers = (state = initialState, action = {}) => {
     switch (action.type) {
         // case types.RESET_DATA:
-            // return {
-            //     ...state,
-            //     projects: [],
-            //     project: null,
-            //     loadingProjects: true,
-            //     loadingProject: true,
-            //     currentPage: 0,
-            //     sizePage: 10,
-            //     totalElements: 0,
-            //     totalPages: 0,
-            //     numberOfElements: 0,
-            // }
+        // return {
+        //     ...state,
+        //     projects: [],
+        //     project: null,
+        //     loadingProjects: true,
+        //     loadingProject: true,
+        //     currentPage: 0,
+        //     sizePage: 10,
+        //     totalElements: 0,
+        //     totalPages: 0,
+        //     numberOfElements: 0,
+        // }
         case types.GET_TASKS_BY_PROJECT_ID:
             return {
                 ...state,

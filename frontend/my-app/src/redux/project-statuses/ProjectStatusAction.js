@@ -1,5 +1,4 @@
 import * as types from "./ProjectStatusActionType"
-import ProjectService from "../../service/ProjectService";
 import ProjectStatusesService from "../../service/ProjectStatusesService";
 
 const gotProjectStatusesSuccess = (projectStatuses) => ({

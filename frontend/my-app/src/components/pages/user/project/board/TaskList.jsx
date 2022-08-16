@@ -2,9 +2,10 @@ import React, {useContext, useState} from 'react';
 import {BoardContext} from './Board'
 import TaskItem from './TaskItem'
 import {useDispatch, useSelector} from "react-redux";
-import RemoveTaskDialog from "../../dialogs/RemoveTaskDialog";
-import {getTaskById} from "../../../redux/task/TaskAction";
-import CreateUpdateTaskDialog from "../../dialogs/CreateUpdateTaskDialog";
+import {getTaskById} from "../../../../../redux/task/TaskAction";
+import CreateUpdateTaskDialog from "../../../../dialogs/CreateUpdateTaskDialog";
+import RemoveTaskDialog from "../../../../dialogs/RemoveTaskDialog";
+import AboutTaskDialog from "../../../../dialogs/AboutTaskDialog";
 
 function TaskList(props) {
     const dispatch = useDispatch()
@@ -13,13 +14,14 @@ function TaskList(props) {
 
     const [showRemoveTaskDialog, setShowRemoveTaskDialog] = useState(false)
     const [showCreateUpdateTaskDialog, setShowCreateUpdateTaskDialog] = useState(false)
+    const [showAboutTaskDialog, setSowAboutTaskDialog] = useState(false)
 
     const showModals = () => {
-        if (showRemoveTaskDialog) {
+        if (showAboutTaskDialog) {
             return (
-                <RemoveTaskDialog
-                    show={showRemoveTaskDialog}
-                    onHide={() => setShowRemoveTaskDialog(false)}
+                <AboutTaskDialog
+                    show={showAboutTaskDialog}
+                    onHide={() => setSowAboutTaskDialog(false)}
                 />
             )
         }
@@ -32,17 +34,29 @@ function TaskList(props) {
                 />
             )
         }
+        if (showRemoveTaskDialog) {
+            return (
+                <RemoveTaskDialog
+                    show={showRemoveTaskDialog}
+                    onHide={() => setShowRemoveTaskDialog(false)}
+                />
+            )
+        }
     }
 
-
-    const handleRemoveTask = (id) => {
+    const handleAboutTask = (id) => {
         dispatch(getTaskById(id))
-        setShowRemoveTaskDialog(true)
+        setSowAboutTaskDialog(true)
     }
 
     const handleUpdateTask = (id) => {
         dispatch(getTaskById(id))
         setShowCreateUpdateTaskDialog(true)
+    }
+
+    const handleRemoveTask = (id) => {
+        dispatch(getTaskById(id))
+        setShowRemoveTaskDialog(true)
     }
 
     return (
@@ -61,8 +75,9 @@ function TaskList(props) {
                         >
                             <TaskItem
                                 task={task}
-                                handleRemoveTask={() => handleRemoveTask(task.id)}
+                                handleAboutTask={() => handleAboutTask(task.id)}
                                 handleUpdateTask={() => handleUpdateTask(task.id)}
+                                handleRemoveTask={() => handleRemoveTask(task.id)}
                             />
                         </div>
                     ))

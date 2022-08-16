@@ -1,9 +1,9 @@
-import React, {createContext} from "react";
+import React, {createContext, useEffect} from "react";
 import ColumnList from "./ColumnList";
 import {Grid} from "@mui/material";
-import "../../../style/Board.css";
+import "../../../../../style/Board.css";
 import {useDispatch, useSelector} from "react-redux";
-import {updateTaskProjectStatusById} from "../../../redux/task/TaskAction";
+import {updateTaskProjectStatusById} from "../../../../../redux/task/TaskAction";
 
 export const BoardContext = createContext({});
 

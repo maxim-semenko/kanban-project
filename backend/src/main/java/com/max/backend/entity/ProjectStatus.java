@@ -33,6 +33,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(callSuper = false)
+@ToString
 public class ProjectStatus extends BaseEntity {
 
     @Id

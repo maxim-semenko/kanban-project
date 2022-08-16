@@ -1,5 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {AppBar, CircularProgress, DialogContent, IconButton, TextField, Toolbar, Typography} from "@mui/material";
+import {
+    Alert,
+    AppBar,
+    CircularProgress,
+    Collapse,
+    DialogContent,
+    IconButton,
+    TextField,
+    Toolbar,
+    Typography
+} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -9,13 +19,12 @@ import Box from "@mui/material/Box";
 import {createProjectStatus, updateProjectStatusById} from "../../redux/project-statuses/ProjectStatusAction";
 import ProjectStatusValidator from "../../validator/ProjectStatusValidator";
 import {useParams} from "react-router-dom";
-import {Alert, Collapse} from "react-bootstrap";
 
 function CreateUpdateProjectStatusDialog(props) {
     const {id} = useParams();
     const user = JSON.parse(localStorage.getItem("user"))
     const dispatch = useDispatch()
-    const {projectStatus, loadingProjectStatus} = useSelector(state => state.dataProjectStatuses)
+    const {projectStatus, projectStatuses, loadingProjectStatus} = useSelector(state => state.dataProjectStatuses)
 
     const [name, setName] = useState('')
     const [limit, setLimit] = useState(0)
@@ -24,10 +33,12 @@ function CreateUpdateProjectStatusDialog(props) {
     const [nameError, setNameError] = useState('')
     const [limitError, setLimitError] = useState('')
 
-    const [showError, setShowError] = useState(false)
-    const [textError, setTextError] = useState('')
+    const [showMessage, setShowMessage] = useState(false)
+    const [textMessage, setTextMessage] = useState('')
+    const [typeMessage, setTypeMessage] = useState('')
 
     useEffect(() => {
+        console.log("CREATE_UPDATE_DIALOG")
         if (props.method === "update" && projectStatus !== null) {
             setName(projectStatus.name)
             setLimit(projectStatus.limitTotalTask)
@@ -65,7 +76,7 @@ function CreateUpdateProjectStatusDialog(props) {
     }
 
     const handleUpdateCreateProject = (event) => {
-        setShowError(false)
+        setShowMessage(false)
         if (!findFormErrors()) {
             const request = {
                 name: name,
@@ -75,25 +86,29 @@ function CreateUpdateProjectStatusDialog(props) {
             if (props.method === "create") {
                 dispatch(createProjectStatus(request))
                     .then(() => {
-                        props.onHide()
+                        setTextMessage("You successfully create new column!")
+                        setTypeMessage("success")
                     })
                     .catch(error => {
-                        setShowError(true)
-                        setTextError("Check your data and try again!")
+                        setShowMessage(true)
+                        setTextMessage("Check your data and try again!")
                     })
+                    .finally(() => setShowMessage(true))
             } else {
                 dispatch(updateProjectStatusById(request, projectStatus.id))
                     .then(() => {
-                        props.onHide()
+                        setTextMessage("You successfully update column!")
+                        setTypeMessage("success")
                     })
                     .catch(error => {
-                        setShowError(true)
-                        setTextError(error.response.data.message)
+                        setTextMessage(error.response.data.message)
+                        setTypeMessage("error")
                     })
+                    .finally(() => setShowMessage(true))
+
             }
         }
     }
-
 
     return (
         <Dialog open={props.show} onClose={props.onHide} fullWidth maxWidth="sm">
@@ -112,7 +127,9 @@ function CreateUpdateProjectStatusDialog(props) {
                     </Typography>
                     <Button
                         onClick={handleUpdateCreateProject}
-                        disabled={props.method === "update" && loadingProjectStatus}
+                        disabled={(props.method === "update" && loadingProjectStatus)
+                            || (props.method === "create" && projectStatuses.length === 10)
+                        }
                         color={"success"}
                         variant={"contained"}
                     >
@@ -126,16 +143,10 @@ function CreateUpdateProjectStatusDialog(props) {
                         <Box display="flex" justifyContent="center"><CircularProgress/></Box>
                         :
                         <form style={{width: '100%', marginTop: '24px',}} noValidate>
-                            <Collapse in={showError}>
-                                <div>
-                                    <Alert variant="danger" onClose={() => setShowError(false)} dismissible>
-                                        <Alert.Heading>
-                                            {props.method === "created" ? 'Create error' : 'Update error'}
-                                        </Alert.Heading>
-                                        <p>{textError}</p>
-                                    </Alert>
-                                </div>
+                            <Collapse in={showMessage}>
+                                <Alert severity={typeMessage}>{textMessage}</Alert>
                             </Collapse>
+                            <br/>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={12}>
                                     <TextField

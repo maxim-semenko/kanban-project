@@ -6,7 +6,7 @@ const cookies = new Cookies();
 
 class TaskService {
 
-    async getAllPriorities(page = 0, size = 0, ) {
+    async getAllPriorities(page = 0, size = 0,) {
         return axios.get(`${API_URL}/priorities`, {
             params: {
                 sort: 'id,asc',
@@ -19,7 +19,7 @@ class TaskService {
         })
     }
 
-    async getAllTasksByProjectId(projectId, page = 0, size = 0, ) {
+    async getAllTasksByProjectId(projectId, page = 0, size = 0,) {
         return axios.get(`${API_URL}/projects/${projectId}`, {
             params: {
                 // sort: 'createdDate,desc',
@@ -66,6 +66,22 @@ class TaskService {
 
     async deleteTaskById(id) {
         return axios.delete(`${API_URL}/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${cookies.get("token")}`,
+            }
+        })
+    }
+
+    async addUserToTaskByTaskIdAndUserId(taskId, userId) {
+        return axios.put(`${API_URL}/${taskId}/users/${userId}`, null, {
+            headers: {
+                'Authorization': `Bearer ${cookies.get("token")}`,
+            }
+        })
+    }
+
+    async removeUserFromTaskByTaskIdAndUserId(taskId, userId) {
+        return axios.delete(`${API_URL}/${taskId}/users/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${cookies.get("token")}`,
             }

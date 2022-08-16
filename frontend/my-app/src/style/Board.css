@@ -1,8 +1,8 @@
 .card-task {
     margin-bottom: 25px;
-    width:255px;
+    width: 255px;
     color: #fff;
-    background-color: #6c757d !important;
+    background-color: #6c757d;
     border-color: #6c757d !important;
     cursor: move;
 }
@@ -10,6 +10,7 @@
 .stage-header {
     background-color: #ccc !important;
 }
+
 .card-task-option i {
     color: #fff !important;
     font-size: 14px;
@@ -39,6 +40,7 @@
     width: 290px;
     margin-bottom: 20px;
 }
+
 .card-column:first-of-type {
     margin-left: 0;
 }

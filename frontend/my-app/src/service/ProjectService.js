@@ -52,7 +52,7 @@ class UserService {
     }
 
     async addUserToProjectByProjectIdAndUserId(projectId, userId) {
-        return axios.put(`${API_URL}/${projectId}/users/${userId}`, null,{
+        return axios.put(`${API_URL}/${projectId}/users/${userId}`, null, {
             headers: {
                 'Authorization': `Bearer ${cookies.get("token")}`,
             }

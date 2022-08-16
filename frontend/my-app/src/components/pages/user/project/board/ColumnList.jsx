@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import RemoveProjectStatusDialog from "../../dialogs/RemoveProjectStatusDialog";
-import {getProjectStatusById} from "../../../redux/project-statuses/ProjectStatusAction";
-import CreateUpdateProjectStatusDialog from "../../dialogs/CreateUpdateProjectStatusDialog";
 import ColumnItem from "./ColumnItem";
+import {getProjectStatusById} from "../../../../../redux/project-statuses/ProjectStatusAction";
+import CreateUpdateProjectStatusDialog from "../../../../dialogs/CreateUpdateProjectStatusDialog";
+import RemoveProjectStatusDialog from "../../../../dialogs/RemoveProjectStatusDialog";
 
 function ColumnList() {
     const dispatch = useDispatch()
@@ -50,19 +50,21 @@ function ColumnList() {
     }
 
     return (
-        <div className="column-wrapper">
+        <>
             {showModals()}
-            <div style={{width: divWidth}}>
-                {projectStatuses.map((column, index) => (
-                    <ColumnItem
-                        key={index}
-                        column={column}
-                        handleUpdateProjectStatus={() => handleUpdateProjectStatus(column.id)}
-                        handleRemoveProjectStatus={() => handleRemoveProjectStatus(column.id)}
-                    />
-                ))}
+            <div className="column-wrapper">
+                <div style={{width: divWidth}}>
+                    {projectStatuses.map((column, index) => (
+                        <ColumnItem
+                            key={index}
+                            column={column}
+                            handleUpdateProjectStatus={() => handleUpdateProjectStatus(column.id)}
+                            handleRemoveProjectStatus={() => handleRemoveProjectStatus(column.id)}
+                        />
+                    ))}
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 

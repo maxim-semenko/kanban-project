@@ -74,4 +74,16 @@ public class TaskController {
         return new ResponseEntity<>(taskService.updateProjectStatusById(request, id), HttpStatus.OK);
     }
 
+    @PutMapping("/{taskId}/users/{userId}")
+    @PreAuthorize("hasRole('USER') and #userId == authentication.principal.id")
+    public ResponseEntity<Task> addUserToTask(@PathVariable Long taskId, @PathVariable Long userId) {
+        return new ResponseEntity<>(taskService.addUser(taskId, userId), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{taskId}/users/{userId}")
+    @PreAuthorize("hasRole('USER') and #userId == authentication.principal.id")
+    public ResponseEntity<Task> removeUserFromTask(@PathVariable Long taskId, @PathVariable Long userId) {
+        return new ResponseEntity<>(taskService.removeUser(taskId, userId), HttpStatus.OK);
+    }
+
 }

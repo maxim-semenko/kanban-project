@@ -46,15 +46,15 @@ function AboutPage() {
             <Container className="main-container">
                 <h1 style={{textAlign: "center", marginTop: "15px"}}><b>About</b></h1>
                 <hr/>
-                    <Container>
-                        <div style={{marginLeft: "0%", textAlign: "justify"}}>
-                            <h3><b>Kanban-System</b> - Kanban is a popular Lean workflow management method for
-                                defining, managing, and improving services that deliver knowledge work. It helps
-                                you visualize work, maximize efficiency, and improve continuously.</h3>
-                        </div>
-                        <SpringAboutComponent/>
-                        <ReactAboutComponent/>
-                    </Container>
+                <Container>
+                    <div style={{marginLeft: "0%", textAlign: "justify"}}>
+                        <h3><b>Kanban-System</b> - Kanban is a popular Lean workflow management method for
+                            defining, managing, and improving services that deliver knowledge work. It helps
+                            you visualize work, maximize efficiency, and improve continuously.</h3>
+                    </div>
+                    <SpringAboutComponent/>
+                    <ReactAboutComponent/>
+                </Container>
                 {/*</Jumbotron>*/}
             </Container>
             <Footer/>
