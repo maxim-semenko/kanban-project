@@ -16,10 +16,13 @@ function NavigationBar() {
     const isLogin = () => {
         if (token != null && localStorage.getItem("user") !== null) {
             const user = JSON.parse(localStorage.getItem("user"))
+            const isAdmin = user.roles.includes("ROLE_ADMIN")
             return (
                 <div>
-                    <Link to="/cabinet">
-                        <Button variant="outline-primary"><b>Cabinet [{user.email}]</b></Button>
+                    <Link to={isAdmin ? "/administrator" : "/cabinet"}>
+                        <Button variant="outline-primary">
+                            <b>{isAdmin ? "Administrator" : "/Cabinet"} [{user.email}]</b>
+                        </Button>
                     </Link>
                     {' '}
                     <Button variant="outline-danger" href={"/"}

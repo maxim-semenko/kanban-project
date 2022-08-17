@@ -1,4 +1,4 @@
-package com.max.backend;
+package com.max.backend.util;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

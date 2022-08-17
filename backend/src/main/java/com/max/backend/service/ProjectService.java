@@ -5,9 +5,6 @@ import com.max.backend.controller.dto.request.update.UpdateProjectRequest;
 import com.max.backend.entity.Project;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface ProjectService {
 

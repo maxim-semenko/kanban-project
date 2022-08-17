@@ -90,8 +90,8 @@ function CreateUpdateProjectStatusDialog(props) {
                         setTypeMessage("success")
                     })
                     .catch(error => {
-                        setShowMessage(true)
                         setTextMessage("Check your data and try again!")
+                        setTypeMessage("error")
                     })
                     .finally(() => setShowMessage(true))
             } else {
@@ -150,6 +150,7 @@ function CreateUpdateProjectStatusDialog(props) {
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={12}>
                                     <TextField
+                                        inputProps={{maxLength: 15}}
                                         variant="outlined"
                                         fullWidth
                                         label="Column name"

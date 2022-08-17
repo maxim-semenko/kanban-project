@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {
+    Alert,
     AppBar,
-    CircularProgress,
+    CircularProgress, Collapse,
     DialogContent,
     FormControl,
     FormHelperText,
@@ -49,6 +50,10 @@ function CreateUpdateTaskDialog(props) {
     const [priorityError, setPriorityError] = useState('')
     const [projectStatusError, setProjectStatusError] = useState('')
     const [expiryDateError, setExpiryDateError] = useState('')
+
+    const [showMessage, setShowMessage] = useState(false)
+    const [textMessage, setTextMessage] = useState('')
+    const [typeMessage, setTypeMessage] = useState('')
 
     useEffect(() => {
         TaskService.getAllPriorities()
@@ -126,8 +131,14 @@ function CreateUpdateTaskDialog(props) {
                 }
                 dispatch(createTask(request))
                     .then(() => {
-                        props.onHide()
+                        setTextMessage("You successfully create new task!")
+                        setTypeMessage("success")
                     })
+                    .catch(error => {
+                        setTextMessage(error.response.data.message)
+                        setTypeMessage("error")
+                    })
+                    .finally(() => setShowMessage(true))
             } else {
                 const request = {
                     name: name,
@@ -136,9 +147,16 @@ function CreateUpdateTaskDialog(props) {
                     expiryDate: expiryDate
                 }
                 dispatch(updateTaskById(request, task.id))
+
                     .then(() => {
-                        props.onHide()
+                        setTextMessage("You successfully update task!")
+                        setTypeMessage("success")
                     })
+                    .catch(error => {
+                        setTextMessage(error.response.data.message)
+                        setTypeMessage("error")
+                    })
+                    .finally(() => setShowMessage(true))
             }
         }
     }
@@ -176,9 +194,14 @@ function CreateUpdateTaskDialog(props) {
                         </Box>
                         :
                         <form style={{width: '100%', marginTop: '10px',}} noValidate>
+                            <Collapse in={showMessage}>
+                                <Alert severity={typeMessage}>{textMessage}</Alert>
+                            </Collapse>
+                            <br/>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={12}>
                                     <TextField
+                                        inputProps={{maxLength: 12}}
                                         variant="outlined"
                                         fullWidth
                                         label="Task name"

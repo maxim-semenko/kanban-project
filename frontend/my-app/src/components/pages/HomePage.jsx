@@ -1,9 +1,9 @@
 import React from 'react';
-import NavigationBar from "../../common/NavigationBar";
+import NavigationBar from "../common/NavigationBar";
 import {Col, Container, Row} from "react-bootstrap";
-import Footer from "../../common/Footer";
-import image from "../../../image/home-image.jpg"
-import kanbanImage from "../../../image/kanban-image.jpg"
+import Footer from "../common/Footer";
+import image from "../../image/home-image.jpg"
+import kanbanImage from "../../image/kanban-image.jpg"
 
 function HomePage(props) {
 

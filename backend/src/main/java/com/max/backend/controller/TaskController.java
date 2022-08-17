@@ -69,9 +69,9 @@ public class TaskController {
 
     @PatchMapping("/{id}/project-status")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Task> updateTaskById(@RequestBody @Valid UpdateTaskProjectStatusRequest request,
-                                               @PathVariable Long id) {
-        return new ResponseEntity<>(taskService.updateProjectStatusById(request, id), HttpStatus.OK);
+    public ResponseEntity<Task> updateTaskStatusById(@RequestBody @Valid UpdateTaskProjectStatusRequest request,
+                                                     @PathVariable Long id) {
+        return new ResponseEntity<>(taskService.updateStatusById(request, id), HttpStatus.OK);
     }
 
     @PutMapping("/{taskId}/users/{userId}")

@@ -9,7 +9,7 @@ class UserService {
     async getAllUsers(page = 0, size = 0) {
         return axios.get(`${API_URL}/`, {
             params: {
-                sort: 'registerDate,desc',
+                sort: 'createdDate,desc',
                 page: page,
                 size: size,
             },

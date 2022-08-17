@@ -1,6 +1,6 @@
 package com.max.backend.service.impl;
 
-import com.max.backend.SecurityUtil;
+import com.max.backend.util.SecurityUtil;
 import com.max.backend.controller.dto.request.create.CreateTaskRequest;
 import com.max.backend.controller.dto.request.update.UpdateTaskProjectStatusRequest;
 import com.max.backend.controller.dto.request.update.UpdateTaskRequest;
@@ -65,6 +65,13 @@ public class TaskServiceImpl implements TaskService {
                 .createdDate(new Date())
                 .build();
 
+        ProjectStatus projectStatus = task.getProjectStatus();
+        Long countTasksByProjectStatus = taskRepository.countAllByProjectStatus(task.getProjectStatus());
+
+        if (Objects.equals(countTasksByProjectStatus, projectStatus.getLimitTotalTask())) {
+            throw new TaskException("Can't add new task with this status because limit total task!");
+        }
+
         return taskRepository.save(task);
     }
 
@@ -84,10 +91,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateProjectStatusById(UpdateTaskProjectStatusRequest updateProjectStatusRequest, Long id) {
+    public Task updateStatusById(UpdateTaskProjectStatusRequest updateProjectStatusRequest, Long id) {
         Task task = findById(id);
-        if (!task.getProject().getMembers().contains(getUserByEmail(SecurityUtil.getCurrentUsername()))) {
-            throw new ResourseForbiddenException("Only project member can update status of task!");
+        if (!task.getExecutors().contains(getUserByEmail(SecurityUtil.getCurrentUsername()))) {
+            throw new ResourseForbiddenException("Only executor of task can update status!");
         }
 
         ProjectStatus projectStatus = updateProjectStatusRequest.getProjectStatus();

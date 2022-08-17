@@ -1,6 +1,6 @@
 package com.max.backend.service.aop;
 
-import com.max.backend.SecurityUtil;
+import com.max.backend.util.SecurityUtil;
 import com.max.backend.entity.Project;
 import org.springframework.stereotype.Service;
 

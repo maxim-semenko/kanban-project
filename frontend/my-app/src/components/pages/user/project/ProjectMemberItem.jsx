@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, IconButton, ListItemAvatar, Typography} from "@mui/material";
+import {Button, ListItemAvatar, Typography} from "@mui/material";
 import ListItemButton from "@mui/material/ListItemButton";
 import MyAvatar from "../../../common/MyAvatar";
 import ListItemText from "@mui/material/ListItemText";
@@ -21,9 +21,9 @@ function ProjectMemberItem(props) {
         if (creatorId === currentUserId) {
             if (creatorId !== memberId) {
                 return (
-                        <Button color={"error"} variant={"contained"} onClick={() => removeMember(memberId)}>
-                            Remove member
-                        </Button>
+                    <Button color={"error"} variant={"contained"} onClick={() => removeMember(memberId)}>
+                        Remove member
+                    </Button>
                 )
             }
         }

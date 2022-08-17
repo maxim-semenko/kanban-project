@@ -1,4 +1,4 @@
-import React, {createContext, useEffect} from "react";
+import React, {createContext} from "react";
 import ColumnList from "./ColumnList";
 import {Grid} from "@mui/material";
 import "../../../../../style/Board.css";

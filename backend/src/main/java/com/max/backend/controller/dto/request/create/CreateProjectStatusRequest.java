@@ -1,8 +1,6 @@
 package com.max.backend.controller.dto.request.create;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 

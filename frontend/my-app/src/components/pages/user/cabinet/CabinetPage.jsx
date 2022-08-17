@@ -18,7 +18,7 @@ function CabinetPage() {
 
     useEffect(() => {
         dispatch(resetData())
-        dispatch(getAllProjectByUserId(0, 2, user.id))
+        dispatch(getAllProjectByUserId(0, 5, user.id))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

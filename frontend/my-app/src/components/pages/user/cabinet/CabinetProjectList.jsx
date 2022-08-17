@@ -17,7 +17,7 @@ function CabinetProjectList(props) {
     const fetchMoreData = () => {
         let page = currentPage + 1;
         dispatch(setCurrentPage(page))
-        dispatch(getAllProjectByUserId(page, 2, user.id))
+        dispatch(getAllProjectByUserId(page, 5, user.id))
     };
 
     const [showDeleteProjectModal, setShowDeleteProjectModal] = useState(false)

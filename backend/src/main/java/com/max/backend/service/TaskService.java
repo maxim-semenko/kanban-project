@@ -4,7 +4,6 @@ import com.max.backend.controller.dto.request.create.CreateTaskRequest;
 import com.max.backend.controller.dto.request.update.UpdateTaskProjectStatusRequest;
 import com.max.backend.controller.dto.request.update.UpdateTaskRequest;
 import com.max.backend.entity.Priority;
-import com.max.backend.entity.Project;
 import com.max.backend.entity.Task;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +25,7 @@ public interface TaskService {
     Task updateById(UpdateTaskRequest updateTaskRequest, Long id);
 
     ///!!!
-    Task updateProjectStatusById(UpdateTaskProjectStatusRequest updateProjectStatusRequest, Long id);
+    Task updateStatusById(UpdateTaskProjectStatusRequest updateProjectStatusRequest, Long id);
 
     Task deleteById(Long id);
 

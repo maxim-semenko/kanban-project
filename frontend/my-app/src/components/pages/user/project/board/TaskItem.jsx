@@ -82,7 +82,7 @@ function TaskItem(props) {
         <Card key={props.task.id} className="card-task"
               style={{
                   textAlign: "left",
-                  backgroundColor: dayjs(props.task.expiryDate).isAfter(dayjs(new Date())) ? "#a65656" : "#6c757d"
+                  backgroundColor: dayjs(props.task.expiryDate).isBefore(dayjs(new Date())) ? "#c06e6e" : "#6c757d"
               }}
         >
             <CardHeader
