@@ -75,12 +75,14 @@ public class Project extends BaseEntity {
     @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
     @JsonIgnore
     @ToString.Exclude
+    @Builder.Default
     private List<Task> tasks = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JsonIgnore
     @ToString.Exclude
     @Size(max = 10)
+    @Builder.Default
     private List<ProjectStatus> projectStatuses = new ArrayList<>();
 }
 

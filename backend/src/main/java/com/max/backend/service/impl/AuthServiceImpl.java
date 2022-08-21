@@ -2,7 +2,6 @@ package com.max.backend.service.impl;
 
 import com.max.backend.controller.dto.request.LoginRequest;
 import com.max.backend.controller.dto.request.RegisterRequest;
-import com.max.backend.controller.dto.request.RestorePasswordRequest;
 import com.max.backend.controller.dto.response.JwtResponse;
 import com.max.backend.controller.dto.response.MessageResponse;
 import com.max.backend.controller.dto.response.UserResponse;
@@ -68,44 +67,6 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtils.createToken(request.getEmail(), user.getRoles());
 
         return new JwtResponse(token, UserResponse.mapUserToDTO(user));
-    }
-
-    @Override
-    public MessageResponse restorePassword(RestorePasswordRequest request) {
-//        User user = userRepository.findByEmail(request.getEmail())
-//                .orElseThrow(() -> new ResourseNotFoundException("User was not found!"));
-//
-//        MailTypeMessage mailTypeMessage = mailTypeMessageService.findByName(MailMessageTypeEnum.RESTORE_PASSWORD);
-//        Optional<MailCode> optionalMailCode = mailCodeRepository.getLastByUserAndType(user, mailTypeMessage);
-//        if (optionalMailCode.isPresent()) {
-//            MailCode mailCode = optionalMailCode.get();
-//            if (Boolean.TRUE.equals(mailCode.getIsValid())) {
-//                if (Objects.equals(mailCode.getCode(), request.getEmailCode())) {
-//                    user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-//                    userRepository.save(user);
-//
-//                    mailCode.setIsValid(false);
-//                    mailCodeRepository.save(mailCode);
-//                } else {
-//                    mailCode.setCountAttempts(mailCode.getCountAttempts() + 1);
-//                    if (mailCode.getCountAttempts().equals(5)) {
-//                        mailCode.setIsValid(false);
-//                    }
-//
-//                    mailCodeRepository.save(mailCode);
-//                    throw new MailCodeException("Mail code is not equals. Try again!");
-//                }
-//            } else {
-//                throw new MailCodeException("Mail code is invalid. Send code again!");
-//            }
-//        }
-        return new MessageResponse("Password was restore successfully!");
-    }
-
-    @Override
-    public String generateNewTokenForAuthenticationUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return jwtUtils.generateJwtToken(authentication);
     }
 
 }

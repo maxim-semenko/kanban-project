@@ -1,6 +1,5 @@
 package com.max.backend.service.impl;
 
-import com.max.backend.util.SecurityUtil;
 import com.max.backend.controller.dto.request.create.CreateTaskRequest;
 import com.max.backend.controller.dto.request.update.UpdateTaskProjectStatusRequest;
 import com.max.backend.controller.dto.request.update.UpdateTaskRequest;
@@ -19,6 +18,7 @@ import com.max.backend.repository.ProjectStatusRepository;
 import com.max.backend.repository.TaskRepository;
 import com.max.backend.repository.UserRepository;
 import com.max.backend.service.TaskService;
+import com.max.backend.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -123,12 +123,14 @@ public class TaskServiceImpl implements TaskService {
             throw new ProjectMemberException("User is not a member of project!");
         }
 
-        if (!task.getExecutors().isEmpty()) {
-            task.getExecutors()
-                    .stream()
-                    .filter(user -> !user.equals(existedUser)).findFirst()
-                    .orElseThrow(() -> new ProjectMemberException("User is already exists in task!"));
-        }
+        task.getExecutors()
+                .stream()
+                .filter(user -> user.equals(existedUser))
+                .findFirst()
+                .ifPresent(user -> {
+                    throw new TaskException("User is already exists in task!");
+                });
+
         task.getExecutors().add(existedUser);
 
         return taskRepository.save(task);
@@ -141,9 +143,9 @@ public class TaskServiceImpl implements TaskService {
 
         task.getExecutors()
                 .stream()
-                .filter(user -> user.equals(existedUser)).findFirst()
-                .orElseThrow(() -> new ProjectMemberException("User not found in task!"));
-        task.getExecutors().remove(existedUser);
+                .filter(user -> user.equals(existedUser))
+                .findFirst()
+                .orElseThrow(() -> new TaskException("User not found in task!"));
 
         return taskRepository.save(task);
     }

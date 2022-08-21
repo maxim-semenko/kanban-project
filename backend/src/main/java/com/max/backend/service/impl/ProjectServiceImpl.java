@@ -6,6 +6,7 @@ import com.max.backend.entity.Project;
 import com.max.backend.entity.User;
 import com.max.backend.exception.ProjectMemberException;
 import com.max.backend.exception.ResourseNotFoundException;
+import com.max.backend.exception.TaskException;
 import com.max.backend.repository.ProjectRepository;
 import com.max.backend.repository.UserRepository;
 import com.max.backend.service.ProjectService;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -80,8 +82,12 @@ public class ProjectServiceImpl implements ProjectService {
 
         project.getMembers()
                 .stream()
-                .filter(user -> !user.equals(existedUser)).findFirst()
-                .orElseThrow(() -> new ProjectMemberException("User is already exists in project!"));
+                .filter(user -> user.equals(existedUser))
+                .findFirst()
+                .ifPresent(user -> {
+                    throw new ProjectMemberException("User is already exists in project!");
+                });
+
         project.getMembers().add(existedUser);
 
         return projectRepository.save(project);
@@ -98,8 +104,10 @@ public class ProjectServiceImpl implements ProjectService {
 
         project.getMembers()
                 .stream()
-                .filter(user -> user.equals(existedUser)).findFirst()
-                .orElseThrow(() -> new ProjectMemberException("User not found in project!"));
+                .filter(user -> user.equals(existedUser))
+                .findFirst()
+                .orElseThrow(() -> new ProjectMemberException("User not exists in project!"));
+
         project.getMembers().remove(existedUser);
 
         return projectRepository.save(project);

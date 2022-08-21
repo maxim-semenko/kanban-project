@@ -71,6 +71,7 @@ public class User extends BaseEntity {
     private Date createdDate;
 
     @NotNull
+    @Builder.Default
     private Boolean isAccountNonLocked = true;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -80,11 +81,12 @@ public class User extends BaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "role_id")}
     )
     @JsonIgnore
-    @ToString.Exclude
+    @Builder.Default
     private Set<Role> roles = new HashSet<>();
 
     @ManyToMany(mappedBy = "members")
     @JsonIgnore
+    @Builder.Default
     @ToString.Exclude
     private List<Project> projects = new ArrayList<>();
 
