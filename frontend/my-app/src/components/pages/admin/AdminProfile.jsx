@@ -44,10 +44,10 @@ function AdminProfile() {
                             <Grid item xs={12} md={12} lg={12}>
                                 <Paper className={classes.paper}>
                                     <div style={{paddingTop: "0%"}}>
-                                        <Link to="/cabinet" style={{textDecoration: "none"}}>
-                                            <h1>Cabinet</h1>
-                                        </Link>
-                                        <hr/>
+                                        {/*<Link to="/" style={{textDecoration: "none"}}>*/}
+                                        {/*    <h1>Cabinet</h1>*/}
+                                        {/*</Link>*/}
+                                        {/*<hr/>*/}
                                         <Link to="users" style={{textDecoration: "none"}}>
                                             <h1>User's administrations</h1>
                                         </Link>

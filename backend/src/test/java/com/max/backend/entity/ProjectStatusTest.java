@@ -16,8 +16,8 @@ class ProjectStatusTest {
         projectStatus.setId(1L);
         projectStatus.setProject(new Project());
         projectStatus.setName("Test");
-        projectStatus.setLimitTotalTask(10L);
-        projectStatus.setTasks(List.of());
+        projectStatus.setLimitTotalTicket(10L);
+        projectStatus.setTickets(List.of());
     }
 
     @Test
@@ -32,7 +32,7 @@ class ProjectStatusTest {
 
     @Test
     void getLimitTotalTask() {
-        assertEquals(10L, projectStatus.getLimitTotalTask());
+        assertEquals(10L, projectStatus.getLimitTotalTicket());
     }
 
     @Test
@@ -42,7 +42,7 @@ class ProjectStatusTest {
 
     @Test
     void getTasks() {
-        assertEquals(List.of(), projectStatus.getTasks());
+        assertEquals(List.of(), projectStatus.getTickets());
     }
 
     @Test
@@ -59,8 +59,8 @@ class ProjectStatusTest {
 
     @Test
     void setLimitTotalTask() {
-        projectStatus.setLimitTotalTask(1L);
-        assertEquals(1L, projectStatus.getLimitTotalTask());
+        projectStatus.setLimitTotalTicket(1L);
+        assertEquals(1L, projectStatus.getLimitTotalTicket());
     }
 
     @Test
@@ -71,8 +71,8 @@ class ProjectStatusTest {
 
     @Test
     void setTasks() {
-        projectStatus.setTasks(null);
-        assertNull(projectStatus.getTasks());
+        projectStatus.setTickets(null);
+        assertNull(projectStatus.getTickets());
     }
 
     @Test
@@ -81,8 +81,8 @@ class ProjectStatusTest {
                 .id(1L)
                 .name("Test")
                 .project(new Project())
-                .limitTotalTask(10L)
-                .tasks(List.of())
+                .limitTotalTicket(10L)
+                .tickets(List.of())
                 .build();
         assertEquals(projectStatus, projectStatusBuilder);
 

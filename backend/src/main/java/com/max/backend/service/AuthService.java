@@ -7,7 +7,7 @@ import com.max.backend.controller.dto.response.MessageResponse;
 
 public interface AuthService {
 
-    MessageResponse register(RegisterRequest request);
+    JwtResponse register(RegisterRequest request);
 
     JwtResponse login(LoginRequest request);
 

@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtils jwtUtils;
 
     @Override
-    public MessageResponse register(RegisterRequest request) {
+    public JwtResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new EmailAlreadyExistsException("Email is already in use!");
         }
@@ -52,7 +53,14 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        return new MessageResponse("User registered successfully!");
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+        String token = jwtUtils.createToken(user.getEmail(), user.getRoles());
+
+        return new JwtResponse(token, UserResponse.mapUserToDTO(user));
     }
 
     @Override
@@ -63,7 +71,8 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
         String token = jwtUtils.createToken(request.getEmail(), user.getRoles());
 
         return new JwtResponse(token, UserResponse.mapUserToDTO(user));

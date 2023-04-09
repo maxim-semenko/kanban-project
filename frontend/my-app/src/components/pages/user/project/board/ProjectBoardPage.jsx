@@ -1,16 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import NavigationBar from "../../../../common/NavigationBar";
 import {Link, useParams} from "react-router-dom";
-import {Button, ButtonGroup, CircularProgress, Container} from "@mui/material";
+import {Button, CircularProgress, Container, Stack} from "@mui/material";
 import "../../../../../style/Board.css";
 import {useDispatch, useSelector} from "react-redux";
-import {getAllTasksByProjectId} from "../../../../../redux/task/TaskAction";
-import CreateUpdateTaskDialog from "../../../../dialogs/CreateUpdateTaskDialog";
+import {getAllTicketsByProjectId} from "../../../../../redux/tickets/TicketAction";
+import CreateUpdateTicketDialog from "../../../../dialogs/create-update/CreateUpdateTicketDialog";
 import {getAllProjectStatusesByProjectId} from "../../../../../redux/project-statuses/ProjectStatusAction";
-import CreateUpdateProjectStatusDialog from "../../../../dialogs/CreateUpdateProjectStatusDialog";
-import {getProjectById} from "../../../../../redux/project/ProjectAction";
+import CreateUpdateProjectStatusDialog from "../../../../dialogs/create-update/CreateUpdateProjectStatusDialog";
+import {getProjectById} from "../../../../../redux/projects/ProjectAction";
 import Box from "@mui/material/Box";
 import Board from "./Board";
+import CreateUpdateLogTimeDialog from "../../../../dialogs/create-update/CreateUpdateLogTimeDialog";
+import {setOpenCreateUpdateLogTimeDialog, setOpenRemoveLogTimeDialog} from "../../../../../redux/dialogs/DialogAction";
+import RemoveLogTimeDialog from "../../../../dialogs/remove/RemoveLogTimeDialog";
 
 function ProjectBoardPage(props) {
     const {id} = useParams();
@@ -19,7 +22,13 @@ function ProjectBoardPage(props) {
     const dispatch = useDispatch()
     const {projectStatuses, loadingProjectStatuses} = useSelector(state => state.dataProjectStatuses)
 
-    const [showCreateUpdateTaskDialog, setShowCreateUpdateTaskDialog] = useState(false)
+    const {
+        openCreateUpdateLogTimeDialog,
+        openRemoveLogTimeDialog,
+        methodCreateUpdateLogTimeDialog
+    } = useSelector(state => state.dataDialogs)
+
+    const [showCreateUpdateTicketDialog, setShowCreateUpdateTicketDialog] = useState(false)
     const [showCreateUpdateProjectStatusDialog, setShowCreateUpdateProjectStatusDialog] = useState(false)
 
     useEffect(() => {
@@ -27,17 +36,17 @@ function ProjectBoardPage(props) {
             dispatch(getProjectById(id))
         }
         dispatch(getAllProjectStatusesByProjectId(id))
-        dispatch(getAllTasksByProjectId(id))
+        dispatch(getAllTicketsByProjectId(id))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 
     const showModals = () => {
-        if (showCreateUpdateTaskDialog) {
+        if (showCreateUpdateTicketDialog) {
             return (
-                <CreateUpdateTaskDialog
-                    show={showCreateUpdateTaskDialog}
-                    onHide={() => setShowCreateUpdateTaskDialog(false)}
+                <CreateUpdateTicketDialog
+                    show={showCreateUpdateTicketDialog}
+                    onHide={() => setShowCreateUpdateTicketDialog(false)}
                     method={"create"}
                 />
             )
@@ -51,48 +60,80 @@ function ProjectBoardPage(props) {
                 />
             )
         }
+        // if (openCreateUpdateLogTimeDialog) {
+        //     return (
+        //         <CreateUpdateLogTimeDialog
+        //             show={openCreateUpdateLogTimeDialog}
+        //             onHide={() => dispatch(setOpenCreateUpdateLogTimeDialog(false))}
+        //             method={methodCreateUpdateLogTimeDialog}
+        //         />
+        //     )
+        // }
+        // if (openRemoveLogTimeDialog) {
+        //     return (
+        //         <RemoveLogTimeDialog
+        //             show={openRemoveLogTimeDialog}
+        //             onHide={() => dispatch(setOpenRemoveLogTimeDialog(false))}
+        //         />
+        //     )
+        // }
     }
 
     const Content = () => {
-        if (!loadingProject) {
+        if (loadingProject) {
+            return <Box display="flex" justifyContent="center"><CircularProgress/></Box>
+        } else if (project !== null) {
             return (
                 <div style={{textAlign: "left", marginTop: "15px"}}>
-                    <ButtonGroup disableElevation variant="contained">
-                        <Link to={`/project/${id}`} style={{textDecoration: "none"}}>
-                            <Button size={"large"} color={"error"} style={{borderRadius: "0px"}}>
+                    <Stack direction="row" spacing={1}>
+                        <Link to={`/projects/${id}`} style={{textDecoration: "none"}}>
+                            <Button size={"large"}
+                                    color={"primary"}
+                                    variant={"contained"}
+                            >
                                 Back to project
                             </Button>
                         </Link>
+                        <Link to={`/projects/${id}/log-times`} style={{textDecoration: "none"}}>
+                            < Button
+                                size={"large"}
+                                color={"primary"}
+                                variant={"contained"}
+
+                            >
+                                Full log time history
+                            </Button>
+                        </Link>
+                        <Button
+                            size={"large"}
+                            color={"success"}
+                            variant={"contained"}
+                            onClick={() => setShowCreateUpdateTicketDialog(true)}
+                            disabled={projectStatuses.length === 0 || loadingProjectStatuses}
+                        >
+                            {loadingProjectStatuses ? "Loading..." : "Add ticket"}
+                        </Button>
                         {
                             currentUser.id === project.creator.id ?
                                 <>
                                     < Button
                                         size={"large"}
-                                        color={"primary"}
-                                        style={{borderRadius: "0px"}}
-                                        onClick={() => setShowCreateUpdateProjectStatusDialog(true)}
-                                        disabled={projectStatuses.length === 10 && !loadingProjectStatuses}
-                                    >
-                                        Add column
-                                    </Button>
-                                    <Button
-                                        size={"large"}
                                         color={"success"}
-                                        style={{borderRadius: "0px"}}
-                                        onClick={() => setShowCreateUpdateTaskDialog(true)}
-                                        disabled={projectStatuses.length === 0 && !loadingProjectStatuses}
+                                        variant={"contained"}
+                                        onClick={() => setShowCreateUpdateProjectStatusDialog(true)}
+                                        disabled={projectStatuses.length === 10 || loadingProjectStatuses}
                                     >
-                                        Add task
+                                        {loadingProjectStatuses ? "Loading..." : "Add column"}
                                     </Button>
                                 </>
                                 :
                                 null
                         }
-                    </ButtonGroup>
+                    </Stack>
                 </div>
             )
         } else {
-            return <Box display="flex" justifyContent="center"><CircularProgress/></Box>
+            return <h1>Project not found!</h1>
         }
 
     }
@@ -103,8 +144,15 @@ function ProjectBoardPage(props) {
             <NavigationBar/>
             <Container maxWidth={false} style={{padding: "0 12px 0 12px"}}>
                 <Content/>
-                <hr/>
-                <Board/>
+                {
+                    project !== null ?
+                        <div>
+                            <hr/>
+                            <Board/>
+                        </div>
+                        :
+                        null
+                }
             </Container>
         </div>
     );

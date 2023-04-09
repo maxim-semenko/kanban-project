@@ -7,6 +7,7 @@ import {unstable_createMuiStrictModeTheme} from '@mui/material/styles';
 import {ThemeProvider} from "@mui/styles";
 import store from "./redux/Store";
 import {Provider} from "react-redux";
+import Notification from "./components/common/Notification";
 
 const theme = unstable_createMuiStrictModeTheme();
 
@@ -15,6 +16,7 @@ ReactDOM.render(
         <Provider store={store}>
             <ThemeProvider theme={theme}>
                 <App/>
+                <Notification/>
             </ThemeProvider>
         </Provider>
     </BrowserRouter>,

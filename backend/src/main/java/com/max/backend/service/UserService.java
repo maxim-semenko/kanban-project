@@ -20,7 +20,6 @@ public interface UserService {
 
     Page<User> findAllByEmail(Pageable pageable, String email);
 
-
     User findByEmail(String email);
 
     JwtResponse updateById(UpdateUserRequest updateUserRequest, Long id);

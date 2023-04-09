@@ -1,4 +1,4 @@
-.card-task {
+.card-ticket {
     margin-bottom: 25px;
     width: 255px;
     color: #fff;
@@ -11,12 +11,12 @@
     background-color: #ccc !important;
 }
 
-.card-task-option i {
+.card-ticket-option i {
     color: #fff !important;
     font-size: 14px;
 }
 
-.card-task-option {
+.card-ticket-option {
     display: inline !important;
     float: right !important;
     cursor: pointer !important;
@@ -30,7 +30,7 @@
 }
 
 .inner-column-wrapper {
-    width: 2350px;
+    /*width: 2350px;*/
 }
 
 .card-column {

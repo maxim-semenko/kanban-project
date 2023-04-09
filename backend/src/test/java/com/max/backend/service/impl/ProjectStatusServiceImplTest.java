@@ -1,14 +1,11 @@
 package com.max.backend.service.impl;
 
-import com.max.backend.controller.dto.request.create.CreateProjectRequest;
 import com.max.backend.controller.dto.request.create.CreateProjectStatusRequest;
-import com.max.backend.controller.dto.request.update.UpdateProjectRequest;
 import com.max.backend.controller.dto.request.update.UpdateProjectStatusRequest;
 import com.max.backend.entity.Project;
 import com.max.backend.entity.ProjectStatus;
-import com.max.backend.entity.Task;
+import com.max.backend.entity.Ticket;
 import com.max.backend.entity.User;
-import com.max.backend.exception.ProjectMemberException;
 import com.max.backend.exception.ProjectStatusException;
 import com.max.backend.repository.ProjectRepository;
 import com.max.backend.repository.ProjectStatusRepository;
@@ -28,11 +25,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -91,7 +88,7 @@ class ProjectStatusServiceImplTest {
         //given
         CreateProjectStatusRequest createProjectStatusRequest = new CreateProjectStatusRequest();
         createProjectStatusRequest.setName("Name");
-        createProjectStatusRequest.setLimitTotalTask(10L);
+        createProjectStatusRequest.setLimitTotalTicket(10L);
         createProjectStatusRequest.setProjectId(1L);
 
         User user = User.builder()
@@ -107,7 +104,7 @@ class ProjectStatusServiceImplTest {
 
         ProjectStatus projectStatus = ProjectStatus.builder()
                 .name(project.getName())
-                .limitTotalTask(createProjectStatusRequest.getLimitTotalTask())
+                .limitTotalTicket(createProjectStatusRequest.getLimitTotalTicket())
                 .project(project)
                 .build();
 
@@ -123,11 +120,11 @@ class ProjectStatusServiceImplTest {
         Long id = 1L;
         UpdateProjectStatusRequest updateProjectStatusRequest = new UpdateProjectStatusRequest();
         updateProjectStatusRequest.setName("Name");
-        updateProjectStatusRequest.setLimitTotalTask(10L);
+        updateProjectStatusRequest.setLimitTotalTicket(10L);
 
         ProjectStatus projectStatus = ProjectStatus.builder()
                 .name(updateProjectStatusRequest.getName())
-                .limitTotalTask(updateProjectStatusRequest.getLimitTotalTask())
+                .limitTotalTicket(updateProjectStatusRequest.getLimitTotalTicket())
                 .build();
 
         when(projectStatusRepository.findById(id)).thenReturn(Optional.of(projectStatus));
@@ -142,12 +139,12 @@ class ProjectStatusServiceImplTest {
         Long id = 1L;
         UpdateProjectStatusRequest updateProjectStatusRequest = new UpdateProjectStatusRequest();
         updateProjectStatusRequest.setName("Name");
-        updateProjectStatusRequest.setLimitTotalTask(1L);
+        updateProjectStatusRequest.setLimitTotalTicket(1L);
 
         ProjectStatus projectStatus = ProjectStatus.builder()
                 .name(updateProjectStatusRequest.getName())
-                .limitTotalTask(updateProjectStatusRequest.getLimitTotalTask())
-                .tasks(List.of(Task.builder().id(1L).build(), Task.builder().id(2L).build()))
+                .limitTotalTicket(updateProjectStatusRequest.getLimitTotalTicket())
+                .tickets(List.of(Ticket.builder().id(1L).build(), Ticket.builder().id(2L).build()))
                 .build();
 
         when(projectStatusRepository.findById(id)).thenReturn(Optional.of(projectStatus));
@@ -163,7 +160,7 @@ class ProjectStatusServiceImplTest {
         ProjectStatus projectStatus = ProjectStatus.builder()
                 .id(id)
                 .name("Name")
-                .limitTotalTask(10L)
+                .limitTotalTicket(10L)
                 .build();
 
         when(projectStatusRepository.findById(id)).thenReturn(Optional.of(projectStatus));

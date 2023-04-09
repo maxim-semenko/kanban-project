@@ -16,7 +16,7 @@ const ProtectedRoute = ({children}) => {
         if (token) {
             return children;
         } else {
-            return <Navigate to={"/"} replace/>
+            return <Navigate to={"/auth/signin"} replace/>
         }
         // } else {
         //     if (path === '/login' || path === '/register') {

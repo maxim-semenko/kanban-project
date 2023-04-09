@@ -3,9 +3,11 @@ package com.max.backend.service.impl;
 import com.max.backend.controller.dto.request.create.CreateProjectRequest;
 import com.max.backend.controller.dto.request.update.UpdateProjectRequest;
 import com.max.backend.entity.Project;
+import com.max.backend.entity.Ticket;
 import com.max.backend.entity.User;
 import com.max.backend.exception.ProjectMemberException;
 import com.max.backend.repository.ProjectRepository;
+import com.max.backend.repository.TicketRepository;
 import com.max.backend.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +40,9 @@ class ProjectServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private TicketRepository ticketRepository;
 
     @Test
     void findById() {
@@ -238,6 +244,7 @@ class ProjectServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(removedUser));
         when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
         when(projectRepository.save(project)).thenReturn(updatedProject);
+        when(ticketRepository.findAllByProject(project, Pageable.unpaged())).thenReturn(Page.empty());
 
         assertEquals(updatedProject, projectService.removeUser(projectId, userId));
     }

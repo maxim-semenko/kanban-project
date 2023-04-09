@@ -25,7 +25,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<JwtResponse> registerUser(@Valid @RequestBody RegisterRequest request) {
         return new ResponseEntity<>(authService.register(request), HttpStatus.CREATED);
     }
 

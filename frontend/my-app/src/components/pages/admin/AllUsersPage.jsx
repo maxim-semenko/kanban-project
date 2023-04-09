@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {useEffect} from 'react';
-import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,6 +11,7 @@ import Button from "@mui/material/Button";
 import {useDispatch, useSelector} from "react-redux";
 import {
     getAllUsers,
+    resetData,
     setCurrentPage,
     setSizePage,
     updateUserIsNonLockedById,
@@ -38,6 +38,10 @@ export default function AllUsersPage() {
     const {users, currentPage, sizePage, totalElements} = useSelector(state => state.dataUsers)
 
     useEffect(() => {
+        dispatch(resetData())
+    }, [])
+
+    useEffect(() => {
         dispatch(getAllUsers(currentPage, sizePage))
     }, [currentPage, sizePage])
 
@@ -59,8 +63,6 @@ export default function AllUsersPage() {
     }
 
     const showData = (columnId, index, user) => {
-        const isAdmin = user.roles.includes("ROLE_ADMIN")
-
         switch (columnId) {
             case 'number':
                 return (<div>{index + 1 + sizePage * currentPage}</div>)
@@ -69,19 +71,6 @@ export default function AllUsersPage() {
             case 'action':
                 return (
                     <div>
-                        <Button
-                            style={{minWidth: "100px"}}
-                            variant="contained"
-                            color={isAdmin ? "error" : "success"}
-                            disabled={currentUser.id === user.id}
-                            onClick={
-                                isAdmin ?
-                                    () => updateUserRoles(["ROLE_USER"], user.id) :
-                                    () => updateUserRoles(["ROLE_USER", "ROLE_ADMIN"], user.id)
-                            }
-                        >
-                            {isAdmin ? 'Take admin' : 'Give admin'}
-                        </Button>{' '}
                         <Button
                             style={{minWidth: "100px"}}
                             variant="contained"
@@ -108,58 +97,55 @@ export default function AllUsersPage() {
             <div style={{marginTop: "1%"}}>
                 <Link to="/administrator" style={{textDecoration: "none"}}>
                     <Button variant="contained" color={"error"} style={{marginBottom: "1%"}} size={"large"}>
-                        Back to admin
+                        Back to admin page
                     </Button>{' '}
                 </Link>
             </div>
-            <Paper sx={{width: '100%', overflow: 'hidden'}}>
-
-                <TablePagination
-                    rowsPerPageOptions={[1, 5, 10, 25]}
-                    component="div"
-                    count={totalElements}
-                    rowsPerPage={sizePage}
-                    page={currentPage}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-                <TableContainer>
-                    <Table stickyHeader aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-                                {columns.map((column) => (
-                                    <TableCell
-                                        key={column.id}
-                                        align={column.align}
-                                        style={{minWidth: column.minWidth}}
-                                    >
-                                        <b>{column.label}</b>
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {
-                                users
-                                    .map((row, index) => {
-                                        return (
-                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                {columns.map((column) => {
-                                                    return (
-                                                        <TableCell key={column.id} align={column.align}>
-                                                            {showData(column.id, index, row)}
-                                                        </TableCell>
-                                                    );
-                                                })}
-                                            </TableRow>
-                                        );
-                                    })
-                            }
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <br/>
-            </Paper>
+            <TablePagination
+                rowsPerPageOptions={[1, 5, 10, 25]}
+                component="div"
+                count={totalElements}
+                rowsPerPage={sizePage}
+                page={currentPage}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+            <TableContainer>
+                <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                        <TableRow>
+                            {columns.map((column) => (
+                                <TableCell
+                                    key={column.id}
+                                    align={column.align}
+                                    style={{minWidth: column.minWidth}}
+                                >
+                                    <b>{column.label}</b>
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            users
+                                .map((row, index) => {
+                                    return (
+                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                            {columns.map((column) => {
+                                                return (
+                                                    <TableCell key={column.id} align={column.align}>
+                                                        {showData(column.id, index, row)}
+                                                    </TableCell>
+                                                );
+                                            })}
+                                        </TableRow>
+                                    );
+                                })
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <br/>
             <Footer/>
         </div>
     );

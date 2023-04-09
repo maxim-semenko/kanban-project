@@ -1,10 +1,12 @@
 package com.max.backend.entity;
 
+import com.max.backend.repository.TicketRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -12,19 +14,19 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class TaskTest {
 
-    private final Task task = new Task();
+    private final Ticket task = new Ticket();
 
     @BeforeEach
     void setUp() {
         task.setId(1L);
-        task.setName("Name");
+        task.setTitle("Name");
         task.setDescription("Description");
         task.setPriority(Priority.builder().build());
         task.setProjectStatus(ProjectStatus.builder().build());
         task.setExpiryDate(new Date());
         task.setCreatedDate(new Date());
         task.setProject(Project.builder().build());
-        task.setExecutors(List.of());
+        task.setExecutors(Set.of());
     }
 
     @Test
@@ -33,8 +35,8 @@ class TaskTest {
     }
 
     @Test
-    void getName() {
-        assertEquals("Name", task.getName());
+    void getTitle() {
+        assertEquals("Name", task.getTitle());
     }
 
     @Test
@@ -80,9 +82,9 @@ class TaskTest {
     }
 
     @Test
-    void setName() {
-        task.setName("Name1");
-        assertEquals("Name1", task.getName());
+    void setTitle() {
+        task.setTitle("Name1");
+        assertEquals("Name1", task.getTitle());
     }
 
     @Test

@@ -1,16 +1,21 @@
 import {combineReducers} from "redux";
-import projectReducers from "./project/ProjectReducers";
-import taskReducers from "./task/TaskReducers";
+import logTimeReducers from "./log-times/LogTimeReducers";
+import projectReducer from "./projects/ProjectReducers";
+import ticketReducers from "./tickets/TicketReducers";
 import usersReducers from "./user/UserReducers";
 import projectStatusReducers from "./project-statuses/ProjectStatusReducers";
-// import feedbacksReducers from "./feedback/FeedbackReducers";
+import dialogReducers from "./dialogs/DialogReducers";
+import notificationReducers from "./notifications/NotificationReducers";
 
 // There is store all reducers for work with any entity
 const rootReducers = combineReducers({
-    dataProjects: projectReducers,
+    dataProjects: projectReducer,
+    dataLogTimes: logTimeReducers,
     dataProjectStatuses: projectStatusReducers,
-    dataTasks: taskReducers,
+    dataTickets: ticketReducers,
     dataUsers: usersReducers,
+    dataDialogs: dialogReducers,
+    dataNotification: notificationReducers,
 })
 
 export default rootReducers

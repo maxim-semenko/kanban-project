@@ -68,7 +68,7 @@ class AuthServiceImplTest {
 
     @Test
     void registerWithSuccess() {
-        //given
+//        given
         RegisterRequest registerRequest = new RegisterRequest();
         registerRequest.setEmail("email@gmail.com");
         registerRequest.setFirstname("firstname");
@@ -85,11 +85,14 @@ class AuthServiceImplTest {
                 .password(registerRequest.getPassword())
                 .build();
 
-        when(userRepository.existsByEmail(registerRequest.getEmail())).thenReturn(false);
-        when(roleRepository.findByName(RoleEnum.ROLE_USER)).thenReturn(Optional.ofNullable(Role.builder().build()));
-        when(userRepository.save(any())).thenReturn(user);
+        JwtResponse jwtResponse = new JwtResponse("token", UserResponse.mapUserToDTO(user));
 
-        assertNotNull(authService.register(registerRequest).getMessage());
+        when(userRepository.existsByEmail(registerRequest.getEmail())).thenReturn(false);
+        when(roleRepository.findByName(RoleEnum.ROLE_USER)).thenReturn(Optional.ofNullable(Role.builder().name(RoleEnum.ROLE_USER).build()));
+        when(userRepository.save(any())).thenReturn(user);
+        when(jwtUtils.createToken(user.getEmail(), Set.of(Role.builder().name(RoleEnum.ROLE_USER).build()))).thenReturn("token");
+
+        assertEquals(jwtResponse.getToken(), authService.register(registerRequest).getToken());
     }
 
     @Test

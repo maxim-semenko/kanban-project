@@ -18,5 +18,5 @@ public class UpdateProjectStatusRequest {
     @NotNull
     @Min(1)
     @Max(100)
-    private Long limitTotalTask;
+    private Long limitTotalTicket;
 }

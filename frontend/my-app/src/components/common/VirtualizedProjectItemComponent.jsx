@@ -30,7 +30,7 @@ export default function VirtualizedProjectItemComponent(props) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Link to={`/project/${props.project.id}`} style={{textDecoration: 'none'}}>
+                <Link to={`/projects/${props.project.id}`} style={{textDecoration: 'none'}}>
                     <Button
                         size="small"
                         variant={"contained"}

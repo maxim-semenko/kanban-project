@@ -2,18 +2,18 @@ import React, {useEffect, useState} from 'react';
 import {Link, useParams} from "react-router-dom";
 import NavigationBar from "../../../common/NavigationBar";
 import {Col, Container, Row} from "react-bootstrap";
-import {Button, ButtonGroup, CircularProgress} from "@mui/material";
+import {Button, CircularProgress, Stack} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Footer from "../../../common/Footer";
 import ProjectMembersList from "./ProjectMembersList";
-import {getProjectById} from "../../../../redux/project/ProjectAction";
-import RemoveProjectDialog from "../../../dialogs/RemoveProjectDialog";
+import {getProjectById} from "../../../../redux/projects/ProjectAction";
+import RemoveProjectDialog from "../../../dialogs/remove/RemoveProjectDialog";
 import {useDispatch, useSelector} from "react-redux";
 import AddMemberProjectDialog from "../../../dialogs/AddMemberProjectDialog";
-import RemoveMemberProjectDialog from "../../../dialogs/RemoveMemberProjectDialog";
+import RemoveMemberProjectDialog from "../../../dialogs/remove/RemoveMemberProjectDialog";
 import {getUsersByProjectId, resetData} from "../../../../redux/user/UserAction";
 import dayjs from "dayjs";
-import CreateUpdateProjectModal from "../../../dialogs/CreateUpdateProjectModal";
+import CreateUpdateProjectModal from "../../../dialogs/create-update/CreateUpdateProjectModal";
 import Box from "@mui/material/Box";
 
 function AboutProjectPage(props) {
@@ -83,19 +83,22 @@ function AboutProjectPage(props) {
 
     const ProjectButtons = () => {
         return (
-            <ButtonGroup disableElevation variant="contained">
-                <Link to={"/cabinet"} style={{textDecoration: "none"}}>
-                    <Button size={"large"} color={"secondary"} style={{borderRadius: "0px"}}>
-                        Back to cabinet
-                    </Button>
-                </Link>
-                <Link to={`/project/${project.id}/board`} style={{textDecoration: "none"}}>
-                    <Button size={"large"} color={"primary"} style={{borderRadius: "0px"}}>
-                        Project board
-                    </Button>
-                </Link>
-                <ExtraButtonsForCreator/>
-            </ButtonGroup>
+            <div>
+                <Stack direction="row" spacing={1}>
+                    <Link to={"/projects"} style={{textDecoration: "none"}}>
+                        <Button size={"large"} color={"primary"} variant={"contained"}>
+                            Back to projects
+                        </Button>
+                    </Link>
+                    <Link to={`/projects/${project.id}/board`} style={{textDecoration: "none"}}>
+                        <Button size={"large"} color={"primary"} variant={"contained"}>
+                            Project board
+                        </Button>
+                    </Link>
+                    <ExtraButtonsForCreator/>
+                </Stack>
+
+            </div>
         )
     }
 
@@ -119,21 +122,21 @@ function AboutProjectPage(props) {
     const ExtraButtonsForCreator = () => {
         if (currentUser.id === project.creator.id) {
             return (
-                <>
-                    <Button size={"large"} color={"success"} style={{borderRadius: "0px"}}
-                            onClick={() => handleEditProject(project.id)}
+                <Stack direction="row" spacing={1}>
+                    <Button size={"large"} color={"success"}
+                            onClick={() => handleEditProject(project.id)} variant={"contained"}
                     >
                         Edit project
                     </Button>
                     <Button
                         size={"large"}
                         color={"error"}
-                        style={{borderRadius: "0px"}}
+                        variant={"contained"}
                         onClick={() => handleRemoveProject(project.id)}
                     >
                         Delete project
                     </Button>
-                </>
+                </Stack>
             )
         } else {
             return null
@@ -141,7 +144,9 @@ function AboutProjectPage(props) {
     }
 
     const Content = () => {
-        if (project !== null) {
+        if (loadingProject) {
+            return <Box display="flex" justifyContent="center"><CircularProgress style={{marginTop: "15px"}}/></Box>
+        } else if (project !== null) {
             return (
                 <Container className="main-container" style={{paddingBottom: "5%"}}>
                     <h1 style={{textAlign: "center", marginTop: "15px"}}><b>Project «{project.name}»</b></h1>
@@ -187,11 +192,7 @@ function AboutProjectPage(props) {
                 </Container>
             )
         } else {
-            return (
-                <Box display="flex" justifyContent="center">
-                    <CircularProgress style={{marginTop: "15px"}}/>
-                </Box>
-            )
+            return <h1>Project not found!</h1>
         }
     }
 

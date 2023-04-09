@@ -36,7 +36,7 @@ public class ProjectStatusServiceImpl implements ProjectStatusService {
     public ProjectStatus create(CreateProjectStatusRequest createProjectStatusRequest) {
         ProjectStatus projectStatus = ProjectStatus.builder()
                 .name(createProjectStatusRequest.getName())
-                .limitTotalTask(createProjectStatusRequest.getLimitTotalTask())
+                .limitTotalTicket(createProjectStatusRequest.getLimitTotalTicket())
                 .project(getProjectById(createProjectStatusRequest.getProjectId()))
                 .build();
 
@@ -46,11 +46,11 @@ public class ProjectStatusServiceImpl implements ProjectStatusService {
     @Override
     public ProjectStatus updateById(UpdateProjectStatusRequest updateProjectStatusRequest, Long id) {
         ProjectStatus projectStatus = findById(id);
-        if (projectStatus.getTasks().size() > updateProjectStatusRequest.getLimitTotalTask()) {
-            throw new ProjectStatusException("The new limit of tasks can't be less then current size of task!");
+        if (projectStatus.getTickets().size() > updateProjectStatusRequest.getLimitTotalTicket()) {
+            throw new ProjectStatusException("The new limit of ticket can't be less then current size of task!");
         }
         projectStatus.setName(updateProjectStatusRequest.getName());
-        projectStatus.setLimitTotalTask(updateProjectStatusRequest.getLimitTotalTask());
+        projectStatus.setLimitTotalTicket(updateProjectStatusRequest.getLimitTotalTicket());
 
         return projectStatusRepository.save(projectStatus);
     }

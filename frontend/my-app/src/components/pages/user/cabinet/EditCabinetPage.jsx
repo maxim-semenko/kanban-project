@@ -9,7 +9,7 @@ import CardMedia from "@mui/material/CardMedia";
 import image from "../../../../image/icon2.png"
 import {Link} from "react-router-dom";
 import UserValidator from "../../../../validator/UserValidator";
-import UserService from "../../../../service/UserService";
+import UserService from "../../../../api/UserService";
 import CloseIcon from '@mui/icons-material/Close';
 import {Cookies} from "react-cookie"
 
@@ -136,7 +136,7 @@ export default function EditCabinetPage() {
                                             style={{marginTop: "1px"}}>
                                         Edit
                                     </Button>
-                                    <Link to={"/cabinet"} style={{textDecoration: "none"}}>
+                                    <Link to={"/"} style={{textDecoration: "none"}}>
                                         <Button fullWidth
                                                 variant="contained"
                                                 color="error"

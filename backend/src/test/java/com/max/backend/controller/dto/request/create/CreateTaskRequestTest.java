@@ -9,22 +9,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CreateTaskRequestTest {
 
-    private final CreateTaskRequest createTaskRequest = new CreateTaskRequest();
+    private final CreateTicketRequest createTicketRequest = new CreateTicketRequest();
 
 
     @BeforeEach
     void setUp() {
-        createTaskRequest.setName("name");
-        createTaskRequest.setDescription("desc");
-        createTaskRequest.setProjectId(1L);
-        createTaskRequest.setProjectStatusId(1L);
-        createTaskRequest.setPriorityId(1L);
-        createTaskRequest.setExpiryDate(new Date());
+        createTicketRequest.setTitle("name");
+        createTicketRequest.setDescription("desc");
+        createTicketRequest.setProjectId(1L);
+        createTicketRequest.setProjectStatusId(1L);
+        createTicketRequest.setPriorityId(1L);
+        createTicketRequest.setExpiryDate(new Date());
     }
 
 
     @Test
     void testToString() {
-        assertNotNull(createTaskRequest.toString());
+        assertNotNull(createTicketRequest.toString());
     }
 }

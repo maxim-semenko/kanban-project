@@ -76,7 +76,7 @@ public class Project extends BaseEntity {
     @JsonIgnore
     @ToString.Exclude
     @Builder.Default
-    private List<Task> tasks = new ArrayList<>();
+    private List<Ticket> tickets = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JsonIgnore

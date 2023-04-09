@@ -19,7 +19,7 @@ function ImageProfile(props) {
     const showEditProfile = () => {
         if (user.id === props.user.id) {
             return (
-                <Link to={"/cabinet/edit"} style={linkStyle}>
+                <Link to={"/edit"} style={linkStyle}>
                     <Button fullWidth
                             variant="contained"
                             color="primary"
@@ -54,7 +54,6 @@ function ImageProfile(props) {
     return (
         <Grid item xs={12} md={12} lg={2}>
             <Card sx={{maxWidth: 160}}>
-
                 <CardMedia
                     component="img"
                     height="240"

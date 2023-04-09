@@ -3,11 +3,12 @@ package com.max.backend.service.impl;
 import com.max.backend.controller.dto.request.create.CreateProjectRequest;
 import com.max.backend.controller.dto.request.update.UpdateProjectRequest;
 import com.max.backend.entity.Project;
+import com.max.backend.entity.Ticket;
 import com.max.backend.entity.User;
 import com.max.backend.exception.ProjectMemberException;
 import com.max.backend.exception.ResourseNotFoundException;
-import com.max.backend.exception.TaskException;
 import com.max.backend.repository.ProjectRepository;
+import com.max.backend.repository.TicketRepository;
 import com.max.backend.repository.UserRepository;
 import com.max.backend.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final TicketRepository ticketRepository;
 
     @Override
     public Project findById(Long id) {
@@ -94,6 +96,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public Project removeUser(Long projectId, Long userId) {
         Project project = findById(projectId);
         User existedUser = getUserById(userId);
@@ -109,6 +112,17 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new ProjectMemberException("User not exists in project!"));
 
         project.getMembers().remove(existedUser);
+
+        Page<Ticket> tickets = ticketRepository.findAllByProject(project, Pageable.unpaged());
+
+        List<Ticket> ticketList = tickets
+                .getContent()
+                .stream()
+                .filter(ticket -> ticket.getExecutors().contains(existedUser))
+                .collect(Collectors.toList());
+        ticketList.forEach(ticket -> ticket.getExecutors().remove(existedUser));
+
+        ticketRepository.saveAll(ticketList);
 
         return projectRepository.save(project);
     }

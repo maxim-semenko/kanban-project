@@ -4,9 +4,9 @@ import {Container} from "react-bootstrap";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {CircularProgress} from "@mui/material";
 import VirtualizedProjectItemComponent from "../../../common/VirtualizedProjectItemComponent";
-import {getAllProjectByUserId, getProjectById, setCurrentPage} from "../../../../redux/project/ProjectAction";
+import {getAllProjectsByUserId, getProjectById, setCurrentPage} from "../../../../redux/projects/ProjectAction";
 import {useDispatch, useSelector} from "react-redux";
-import RemoveProjectDialog from "../../../dialogs/RemoveProjectDialog";
+import RemoveProjectDialog from "../../../dialogs/remove/RemoveProjectDialog";
 import Box from "@mui/material/Box";
 
 function CabinetProjectList(props) {
@@ -17,7 +17,7 @@ function CabinetProjectList(props) {
     const fetchMoreData = () => {
         let page = currentPage + 1;
         dispatch(setCurrentPage(page))
-        dispatch(getAllProjectByUserId(page, 5, user.id))
+        dispatch(getAllProjectsByUserId(page, 5, user.id))
     };
 
     const [showDeleteProjectModal, setShowDeleteProjectModal] = useState(false)
@@ -39,11 +39,11 @@ function CabinetProjectList(props) {
     }
 
     return (
-        <Grid container style={{marginTop: "1%", width: "100%"}}>
+        <div>
             {showModals()}
             {
                 projects.length !== 0 ?
-                    <>
+                    <Grid container style={{marginTop: "1%", width: "100%"}}>
                         <div><h5><b>Total projects: {totalElements}</b></h5></div>
                         <Container maxwidth={"false"} style={{padding: "0 0 0 0"}}>
                             <InfiniteScroll
@@ -66,9 +66,9 @@ function CabinetProjectList(props) {
                                 }
                             </InfiniteScroll>
                         </Container>
-                    </>
+                    </Grid>
                     :
-                    <div>
+                    <div style={{textAlign: "center"}}>
                         {
                             loadingProjects ?
                                 <Box display="flex" justifyContent="center">
@@ -79,8 +79,7 @@ function CabinetProjectList(props) {
                         }
                     </div>
             }
-        </Grid>
-
+        </div>
     );
 }
 

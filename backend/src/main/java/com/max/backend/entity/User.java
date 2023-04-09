@@ -74,7 +74,7 @@ public class User extends BaseEntity {
     @Builder.Default
     private Boolean isAccountNonLocked = true;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_m2m_roles",
             joinColumns = {@JoinColumn(name = "user_id")},

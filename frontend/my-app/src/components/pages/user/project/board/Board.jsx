@@ -1,21 +1,22 @@
 import React, {createContext} from "react";
 import ColumnList from "./ColumnList";
-import {Grid} from "@mui/material";
+import {CircularProgress, Grid} from "@mui/material";
 import "../../../../../style/Board.css";
 import {useDispatch, useSelector} from "react-redux";
-import {updateTaskProjectStatusById} from "../../../../../redux/task/TaskAction";
+import {updateTicketProjectStatusById} from "../../../../../redux/tickets/TicketAction";
+import Box from "@mui/material/Box";
 
 export const BoardContext = createContext({});
 
 function Board() {
     const dispatch = useDispatch()
-    const {tasks, loadingTasks} = useSelector(state => state.dataTasks)
+    const {tickets, loadingTickets} = useSelector(state => state.dataTickets)
     const {projectStatuses, loadingProjectStatuses} = useSelector(state => state.dataProjectStatuses)
 
     /// начало!!!
-    const onDragStartHandler = (event, taskId, stageId) => {
+    const onDragStartHandler = (event, ticketId, stageId) => {
         const data = {
-            taskId: taskId,
+            ticketId: ticketId,
             stageId: stageId
         };
         event.dataTransfer.setData("text/plain", JSON.stringify(data));
@@ -32,10 +33,10 @@ function Board() {
     const onDropHandler = (event, droppedStageId) => {
         let droppedData = event.dataTransfer.getData("text/plain");
         droppedData = JSON.parse(droppedData);
-        const filterTask = tasks.filter((task) => task.id === droppedData.taskId);
+        const filterticket = tickets.filter((ticket) => ticket.id === droppedData.ticketId);
         const filterColumn = projectStatuses.filter((column) => column.id === droppedStageId);
 
-        dispatch(updateTaskProjectStatusById({projectStatus: filterColumn[0]}, filterTask[0].id));
+        dispatch(updateTicketProjectStatusById({projectStatus: filterColumn[0]}, filterticket[0].id));
     };
 
     const ContextData = {
@@ -48,12 +49,12 @@ function Board() {
         <Grid container spacing={2} style={{marginBottom: "20px"}}>
             <Grid item xs={12} md={12}>
                 {
-                    !loadingTasks && !loadingProjectStatuses ?
+                    !loadingTickets && !loadingProjectStatuses ?
                         <BoardContext.Provider value={ContextData}>
                             <ColumnList/>
                         </BoardContext.Provider>
                         :
-                        null
+                        <Box display="flex" justifyContent="center"><CircularProgress/></Box>
                 }
             </Grid>
         </Grid>

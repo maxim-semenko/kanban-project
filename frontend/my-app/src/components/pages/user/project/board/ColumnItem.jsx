@@ -3,15 +3,16 @@ import {Card, CardContent, CardHeader, IconButton, ListItemIcon, ListItemText, M
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import TaskList from "./TaskList";
+import TicketList from "./TicketList";
 import {useSelector} from "react-redux";
 import {BoardContext} from "./Board";
 
-function TaskItem(props) {
+function ColumnItem(props) {
     const currentUser = JSON.parse(localStorage.getItem("user"))
     const {project} = useSelector(state => state.dataProjects)
+    const {projectStatuses} = useSelector(state => state.dataProjectStatuses)
     const {onDragOverHandler, onDropHandler} = useContext(BoardContext);
-    const {tasks} = useSelector(state => state.dataTasks)
+    const {tickets} = useSelector(state => state.dataTickets)
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -32,14 +33,18 @@ function TaskItem(props) {
     }
 
     return (
-        <div className="card-column">
+        <div className="card-column" style={
+            {
+                width: (1520 - projectStatuses.length * 14) / projectStatuses.length,
+                minWidth: 290,
+            }}>
             <Card style={{textAlign: "left"}}>
                 <CardHeader
                     title={<b style={{fontSize: 20}}>{props.column.name}</b>}
                     subheader={
                         <span>
-                            {tasks.filter(task => task.projectStatus.id === props.column.id).length}
-                            /{props.column.limitTotalTask}
+                            {tickets.filter(ticket => ticket.projectStatus.id === props.column.id).length}
+                            /{props.column.limitTotalTicket}
                         </span>}
                     action={currentUser.id === project.creator.id ?
                         <IconButton aria-label="settings" onClick={handleClick}><MoreVertIcon/></IconButton> : null
@@ -51,7 +56,7 @@ function TaskItem(props) {
                     onDrop={(event) => onDropHandler(event, props.column.id)}
                     onDragOver={(event) => onDragOverHandler(event)}
                 >
-                    <TaskList stage={props.column} key={props.column.id}/>
+                    <TicketList stage={props.column} key={props.column.id}/>
                 </CardContent>
                 <div>
                     <Menu
@@ -78,4 +83,4 @@ function TaskItem(props) {
     );
 }
 
-export default TaskItem;
+export default ColumnItem;

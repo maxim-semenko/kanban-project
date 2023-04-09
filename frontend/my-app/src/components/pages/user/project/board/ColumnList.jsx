@@ -2,8 +2,9 @@ import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import ColumnItem from "./ColumnItem";
 import {getProjectStatusById} from "../../../../../redux/project-statuses/ProjectStatusAction";
-import CreateUpdateProjectStatusDialog from "../../../../dialogs/CreateUpdateProjectStatusDialog";
-import RemoveProjectStatusDialog from "../../../../dialogs/RemoveProjectStatusDialog";
+import CreateUpdateProjectStatusDialog from "../../../../dialogs/create-update/CreateUpdateProjectStatusDialog";
+import RemoveProjectStatusDialog from "../../../../dialogs/remove/RemoveProjectStatusDialog";
+import Box from "@mui/material/Box";
 
 function ColumnList() {
     const dispatch = useDispatch()
@@ -14,7 +15,8 @@ function ColumnList() {
     const [showCreateUpdateProjectStatusDialog, setShowCreateUpdateProjectStatusDialog] = useState(false)
 
     useEffect(() => {
-        setDivWidth(projectStatuses.length * 285 + projectStatuses.length * 17);
+        // console.log(projectStatuses.length * 285 + projectStatuses.length * 16)
+        setDivWidth(projectStatuses.length < 5 ? 1505 : projectStatuses.length * 285 + projectStatuses.length * 17);
     }, [projectStatuses]);
 
 
@@ -53,6 +55,11 @@ function ColumnList() {
         <>
             {showModals()}
             <div className="column-wrapper">
+                {
+                    projectStatuses.length === 0 ?
+                        <Box justifyContent="center"><h1>No columns here...</h1></Box>
+                        : null
+                }
                 <div style={{width: divWidth}}>
                     {projectStatuses.map((column, index) => (
                         <ColumnItem

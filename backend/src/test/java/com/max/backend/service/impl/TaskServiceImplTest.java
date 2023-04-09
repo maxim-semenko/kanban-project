@@ -1,21 +1,21 @@
 package com.max.backend.service.impl;
 
-import com.max.backend.controller.dto.request.create.CreateTaskRequest;
-import com.max.backend.controller.dto.request.update.UpdateTaskProjectStatusRequest;
-import com.max.backend.controller.dto.request.update.UpdateTaskRequest;
+import com.max.backend.controller.dto.request.create.CreateTicketRequest;
+import com.max.backend.controller.dto.request.update.UpdateTicketProjectStatusRequest;
+import com.max.backend.controller.dto.request.update.UpdateTicketRequest;
 import com.max.backend.entity.Priority;
 import com.max.backend.entity.Project;
 import com.max.backend.entity.ProjectStatus;
-import com.max.backend.entity.Task;
+import com.max.backend.entity.Ticket;
 import com.max.backend.entity.User;
 import com.max.backend.entity.enums.PriorityEnum;
 import com.max.backend.exception.ProjectMemberException;
 import com.max.backend.exception.ResourseForbiddenException;
-import com.max.backend.exception.TaskException;
+import com.max.backend.exception.TicketException;
 import com.max.backend.repository.PriorityRepository;
 import com.max.backend.repository.ProjectRepository;
 import com.max.backend.repository.ProjectStatusRepository;
-import com.max.backend.repository.TaskRepository;
+import com.max.backend.repository.TicketRepository;
 import com.max.backend.repository.UserRepository;
 import com.max.backend.util.SecurityUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,8 +36,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,13 +48,13 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-class TaskServiceImplTest {
+class TicketServiceImplTest {
 
     @InjectMocks
-    private TaskServiceImpl taskService;
+    private TicketServiceImpl TicketService;
 
     @Mock
-    private TaskRepository taskRepository;
+    private TicketRepository ticketRepository;
 
     @Mock
     private ProjectRepository projectRepository;
@@ -82,16 +84,16 @@ class TaskServiceImplTest {
     void findById() {
         //given
         Long id = 1L;
-        Task task = Task.builder()
+        Ticket Ticket = com.max.backend.entity.Ticket.builder()
                 .id(id)
-                .name("Name")
+                .title("Name")
                 .description("Description")
                 .createdDate(new Date())
                 .build();
 
-        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
+        when(ticketRepository.findById(id)).thenReturn(Optional.of(Ticket));
 
-        assertEquals(task, taskService.findById(id));
+        assertEquals(Ticket, TicketService.findById(id));
     }
 
     @Test
@@ -99,28 +101,31 @@ class TaskServiceImplTest {
         //given
         Long id = 1L;
         when(projectRepository.findById(id)).thenReturn(Optional.of(new Project()));
-        when(taskRepository.findAllByProject(any(PageRequest.class), any(Project.class))).thenReturn(Page.empty());
+        when(ticketRepository.findAllByProject(any(Project.class), any(PageRequest.class))).thenReturn(Page.empty());
 
-        assertEquals(Page.empty(), taskService.findAllByProjectId(PageRequest.of(0, 2), id));
+        assertEquals(Page.empty(), TicketService.findAllByProjectId(PageRequest.of(0, 2), id));
     }
 
     @Test
-    void findAllTaskPriorities() {
+    void findAllTicketPriorities() {
         when(priorityRepository.findAll(any(PageRequest.class))).thenReturn(Page.empty());
 
-        assertEquals(Page.empty(), taskService.findAllTaskPriorities(PageRequest.of(0, 2)));
+        assertEquals(Page.empty(), TicketService.findAllTicketPriorities(PageRequest.of(0, 2)));
     }
 
     @Test
     void createWithSuccess() {
         //given
-        CreateTaskRequest createTaskRequest = new CreateTaskRequest();
-        createTaskRequest.setName("Name");
-        createTaskRequest.setDescription("Description");
-        createTaskRequest.setPriorityId(1L);
-        createTaskRequest.setExpiryDate(new Date());
-        createTaskRequest.setProjectId(1L);
-        createTaskRequest.setProjectStatusId(1L);
+        CreateTicketRequest createTicketRequest = new CreateTicketRequest();
+        createTicketRequest.setTitle("Name");
+        createTicketRequest.setDescription("Description");
+        createTicketRequest.setPriorityId(1L);
+        createTicketRequest.setExpiryDate(new Date());
+        createTicketRequest.setCreatorId(1L);
+        createTicketRequest.setProjectId(1L);
+        createTicketRequest.setProjectStatusId(1L);
+
+        User user = User.builder().build();
 
         Priority priority = Priority.builder().name(PriorityEnum.LOW).build();
         ProjectStatus projectStatus = ProjectStatus.builder().build();
@@ -131,36 +136,37 @@ class TaskServiceImplTest {
                 .createdDate(new Date())
                 .build();
 
-        Task task = Task.builder()
+        Ticket Ticket = com.max.backend.entity.Ticket.builder()
                 .id(1L)
                 .project(project)
                 .priority(priority)
                 .projectStatus(projectStatus)
                 .build();
 
-        when(priorityRepository.findById(createTaskRequest.getPriorityId())).thenReturn(Optional.ofNullable(priority));
-        when(projectStatusRepository.findById(createTaskRequest.getProjectStatusId())).thenReturn(Optional.ofNullable(projectStatus));
-        when(projectRepository.findById(createTaskRequest.getProjectId())).thenReturn(Optional.ofNullable(project));
-        when(taskRepository.save(any())).thenReturn(task);
+        when(userRepository.findById(createTicketRequest.getCreatorId())).thenReturn(Optional.ofNullable(user));
+        when(priorityRepository.findById(createTicketRequest.getPriorityId())).thenReturn(Optional.ofNullable(priority));
+        when(projectStatusRepository.findById(createTicketRequest.getProjectStatusId())).thenReturn(Optional.ofNullable(projectStatus));
+        when(projectRepository.findById(createTicketRequest.getProjectId())).thenReturn(Optional.ofNullable(project));
+        when(ticketRepository.save(any())).thenReturn(Ticket);
 
-        assertEquals(task, taskService.create(createTaskRequest));
+        assertEquals(Ticket, TicketService.create(createTicketRequest));
     }
 
     @Test
-    void createWithFailedThatLimitTotalTask() {
+    void createWithFailedThatLimitTotalTicket() {
         //given
-        CreateTaskRequest createTaskRequest = new CreateTaskRequest();
-        createTaskRequest.setName("Name");
-        createTaskRequest.setDescription("Description");
-        createTaskRequest.setPriorityId(1L);
-        createTaskRequest.setExpiryDate(new Date());
-        createTaskRequest.setProjectId(1L);
-        createTaskRequest.setProjectStatusId(1L);
+        CreateTicketRequest createTicketRequest = new CreateTicketRequest();
+        createTicketRequest.setTitle("Name");
+        createTicketRequest.setDescription("Description");
+        createTicketRequest.setPriorityId(1L);
+        createTicketRequest.setExpiryDate(new Date());
+        createTicketRequest.setProjectId(1L);
+        createTicketRequest.setProjectStatusId(1L);
 
         Priority priority = Priority.builder().name(PriorityEnum.LOW).build();
         ProjectStatus projectStatus = ProjectStatus.builder()
-                .limitTotalTask(1L)
-                .tasks(List.of(Task.builder().build()))
+                .limitTotalTicket(1L)
+                .tickets(List.of(Ticket.builder().build()))
                 .build();
 
         Project project = Project.builder()
@@ -169,12 +175,12 @@ class TaskServiceImplTest {
                 .createdDate(new Date())
                 .build();
 
-        when(priorityRepository.findById(createTaskRequest.getPriorityId())).thenReturn(Optional.ofNullable(priority));
-        when(projectStatusRepository.findById(createTaskRequest.getProjectStatusId())).thenReturn(Optional.ofNullable(projectStatus));
-        when(projectRepository.findById(createTaskRequest.getProjectId())).thenReturn(Optional.ofNullable(project));
-        when(taskRepository.countAllByProjectStatus(projectStatus)).thenReturn(1L);
+        when(priorityRepository.findById(createTicketRequest.getPriorityId())).thenReturn(Optional.ofNullable(priority));
+        when(projectStatusRepository.findById(createTicketRequest.getProjectStatusId())).thenReturn(Optional.ofNullable(projectStatus));
+        when(projectRepository.findById(createTicketRequest.getProjectId())).thenReturn(Optional.ofNullable(project));
+        when(ticketRepository.countAllByProjectStatus(projectStatus)).thenReturn(1L);
 
-        assertThrows(TaskException.class, () -> taskService.create(createTaskRequest));
+        assertThrows(TicketException.class, () -> TicketService.create(createTicketRequest));
     }
 
     @Test
@@ -182,25 +188,25 @@ class TaskServiceImplTest {
     void updateByIdWithSuccess() {
         //given
         Long id = 1L;
-        UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest();
-        updateTaskRequest.setName("Name");
-        updateTaskRequest.setDescription("Description");
-        updateTaskRequest.setPriorityId(1L);
+        UpdateTicketRequest updateTicketRequest = new UpdateTicketRequest();
+        updateTicketRequest.setTitle("Name");
+        updateTicketRequest.setDescription("Description");
+        updateTicketRequest.setPriorityId(1L);
 
         Priority priority = Priority.builder().name(PriorityEnum.LOW).build();
 
-        Task task = Task.builder()
-                .name(updateTaskRequest.getName())
-                .description(updateTaskRequest.getDescription())
+        Ticket Ticket = com.max.backend.entity.Ticket.builder()
+                .title(updateTicketRequest.getTitle())
+                .description(updateTicketRequest.getDescription())
                 .project(Project.builder().creator(User.builder().email("admin").build()).build())
                 .priority(priority)
                 .build();
 
-        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
-        when(priorityRepository.findById(updateTaskRequest.getPriorityId())).thenReturn(Optional.of(priority));
-        when(taskRepository.save(task)).thenReturn(task);
+        when(ticketRepository.findById(id)).thenReturn(Optional.of(Ticket));
+        when(priorityRepository.findById(updateTicketRequest.getPriorityId())).thenReturn(Optional.of(priority));
+        when(ticketRepository.save(Ticket)).thenReturn(Ticket);
 
-        assertEquals(task, taskService.updateById(updateTaskRequest, id));
+        assertEquals(Ticket, TicketService.updateById(updateTicketRequest, id));
     }
 
     @Test
@@ -208,24 +214,24 @@ class TaskServiceImplTest {
     void updateByIdWithFailedThatForbidden() {
         //given
         Long id = 1L;
-        UpdateTaskRequest updateTaskRequest = new UpdateTaskRequest();
-        updateTaskRequest.setName("Name");
-        updateTaskRequest.setDescription("Description");
-        updateTaskRequest.setPriorityId(1L);
+        UpdateTicketRequest updateTicketRequest = new UpdateTicketRequest();
+        updateTicketRequest.setTitle("Name");
+        updateTicketRequest.setDescription("Description");
+        updateTicketRequest.setPriorityId(1L);
 
         Priority priority = Priority.builder().name(PriorityEnum.LOW).build();
 
-        Task task = Task.builder()
-                .name(updateTaskRequest.getName())
-                .description(updateTaskRequest.getDescription())
+        Ticket Ticket = com.max.backend.entity.Ticket.builder()
+                .title(updateTicketRequest.getTitle())
+                .description(updateTicketRequest.getDescription())
                 .project(Project.builder().creator(User.builder().email("admin1").build()).build())
                 .priority(priority)
                 .build();
 
-        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
-        when(priorityRepository.findById(updateTaskRequest.getPriorityId())).thenReturn(Optional.of(priority));
+        when(ticketRepository.findById(id)).thenReturn(Optional.of(Ticket));
+        when(priorityRepository.findById(updateTicketRequest.getPriorityId())).thenReturn(Optional.of(priority));
 
-        assertThrows(ResourseForbiddenException.class, () -> taskService.updateById(updateTaskRequest, id));
+        assertThrows(ResourseForbiddenException.class, () -> TicketService.updateById(updateTicketRequest, id));
     }
 
     @Test
@@ -235,30 +241,30 @@ class TaskServiceImplTest {
         Long id = 1L;
         ProjectStatus projectStatus = ProjectStatus.builder()
                 .name("test")
-                .limitTotalTask(10L)
+                .limitTotalTicket(10L)
                 .build();
 
-        UpdateTaskProjectStatusRequest updateTaskProjectStatusRequest = new UpdateTaskProjectStatusRequest();
-        updateTaskProjectStatusRequest.setProjectStatus(projectStatus);
+        UpdateTicketProjectStatusRequest updateTicketProjectStatusRequest = new UpdateTicketProjectStatusRequest();
+        updateTicketProjectStatusRequest.setProjectStatus(projectStatus);
 
         User user = User.builder().email("admin").build();
         Priority priority = Priority.builder().name(PriorityEnum.LOW).build();
 
-        Task task = Task.builder()
-                .name("name")
+        Ticket Ticket = com.max.backend.entity.Ticket.builder()
+                .title("name")
                 .description("description")
                 .project(Project.builder().creator(user).members(List.of(user)).build())
-                .executors(List.of(user))
+                .executors(Set.of(user))
                 .projectStatus(projectStatus)
                 .priority(priority)
                 .build();
 
         when(userRepository.findByEmail("admin")).thenReturn(Optional.of(user));
-        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
-        when(taskRepository.save(task)).thenReturn(task);
-        when(taskRepository.countAllByProjectStatus(projectStatus)).thenReturn(5L);
+        when(ticketRepository.findById(id)).thenReturn(Optional.of(Ticket));
+        when(ticketRepository.save(Ticket)).thenReturn(Ticket);
+        when(ticketRepository.countAllByProjectStatus(projectStatus)).thenReturn(5L);
 
-        assertEquals(task, taskService.updateStatusById(updateTaskProjectStatusRequest, id));
+        assertEquals(Ticket, TicketService.updateStatusById(updateTicketProjectStatusRequest, id));
     }
 
     @Test
@@ -268,63 +274,63 @@ class TaskServiceImplTest {
         Long id = 1L;
         ProjectStatus projectStatus = ProjectStatus.builder()
                 .name("test")
-                .limitTotalTask(10L)
+                .limitTotalTicket(10L)
                 .build();
 
-        UpdateTaskProjectStatusRequest updateTaskProjectStatusRequest = new UpdateTaskProjectStatusRequest();
-        updateTaskProjectStatusRequest.setProjectStatus(projectStatus);
+        UpdateTicketProjectStatusRequest updateTicketProjectStatusRequest = new UpdateTicketProjectStatusRequest();
+        updateTicketProjectStatusRequest.setProjectStatus(projectStatus);
 
         User user = User.builder().email("admin1").build();
         Priority priority = Priority.builder().name(PriorityEnum.LOW).build();
 
-        Task task = Task.builder()
-                .name("name")
+        Ticket Ticket = com.max.backend.entity.Ticket.builder()
+                .title("name")
                 .description("description")
                 .project(Project.builder().creator(user).members(List.of(user)).build())
-                .executors(List.of(User.builder().email("admin").build()))
+                .executors(Set.of(User.builder().email("admin").build()))
                 .projectStatus(projectStatus)
                 .priority(priority)
                 .build();
 
         when(userRepository.findByEmail("admin")).thenReturn(Optional.of(user));
-        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
+        when(ticketRepository.findById(id)).thenReturn(Optional.of(Ticket));
 
         assertThrows(ResourseForbiddenException.class,
-                () -> taskService.updateStatusById(updateTaskProjectStatusRequest, id));
+                () -> TicketService.updateStatusById(updateTicketProjectStatusRequest, id));
     }
 
     @Test
     @WithMockUser(username = "admin", password = "admin", roles = {"USER", "ADMIN"})
-    void updateStatusByIdWithFailedThatLimitTotalTask() {
+    void updateStatusByIdWithFailedThatLimitTotalTicket() {
         //given
         Long id = 1L;
         ProjectStatus projectStatus = ProjectStatus.builder()
                 .name("test")
-                .limitTotalTask(5L)
+                .limitTotalTicket(5L)
                 .build();
 
-        UpdateTaskProjectStatusRequest updateTaskProjectStatusRequest = new UpdateTaskProjectStatusRequest();
-        updateTaskProjectStatusRequest.setProjectStatus(projectStatus);
+        UpdateTicketProjectStatusRequest updateTicketProjectStatusRequest = new UpdateTicketProjectStatusRequest();
+        updateTicketProjectStatusRequest.setProjectStatus(projectStatus);
 
         User user = User.builder().email("admin").build();
         Priority priority = Priority.builder().name(PriorityEnum.LOW).build();
 
-        Task task = Task.builder()
-                .name("name")
+        Ticket Ticket = com.max.backend.entity.Ticket.builder()
+                .title("name")
                 .description("description")
                 .project(Project.builder().creator(user).members(List.of(user)).build())
-                .executors(List.of(user))
+                .executors(Set.of(user))
                 .projectStatus(projectStatus)
                 .priority(priority)
                 .build();
 
         when(userRepository.findByEmail("admin")).thenReturn(Optional.of(user));
-        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
-        when(taskRepository.save(task)).thenReturn(task);
-        when(taskRepository.countAllByProjectStatus(projectStatus)).thenReturn(5L);
+        when(ticketRepository.findById(id)).thenReturn(Optional.of(Ticket));
+        when(ticketRepository.save(Ticket)).thenReturn(Ticket);
+        when(ticketRepository.countAllByProjectStatus(projectStatus)).thenReturn(5L);
 
-        assertThrows(TaskException.class,
-                () -> taskService.updateStatusById(updateTaskProjectStatusRequest, id));
+        assertThrows(TicketException.class,
+                () -> TicketService.updateStatusById(updateTicketProjectStatusRequest, id));
     }
 
     @Test
@@ -332,21 +338,21 @@ class TaskServiceImplTest {
         //given
         Long id = 1L;
 
-        Task task = Task.builder()
-                .name("Name")
+        Ticket Ticket = com.max.backend.entity.Ticket.builder()
+                .title("Name")
                 .createdDate(new Date())
                 .build();
 
-        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
+        when(ticketRepository.findById(id)).thenReturn(Optional.of(Ticket));
 
-        assertEquals(task, taskService.deleteById(id));
+        assertEquals(Ticket, TicketService.deleteById(id));
     }
 
     @Test
     void addUserWithSuccess() {
         //given
         Long userId = 1L;
-        Long taskId = 2L;
+        Long TicketId = 2L;
         Long projectId = 3L;
 
         User creator = User.builder().id(3L).build();
@@ -362,31 +368,31 @@ class TaskServiceImplTest {
                 .members(membersProject)
                 .build();
 
-        List<User> executors = new ArrayList<>();
+        Set<User> executors = new HashSet<>();
         executors.add(creator);
-        Task task = Task.builder()
-                .id(taskId)
+        Ticket Ticket = com.max.backend.entity.Ticket.builder()
+                .id(TicketId)
                 .project(project)
                 .executors(executors)
                 .build();
 
-        Task updatedTask = Task.builder()
-                .id(taskId)
-                .executors(List.of(creator, addedUser))
+        Ticket updatedTicket = com.max.backend.entity.Ticket.builder()
+                .id(TicketId)
+                .executors(Set.of(creator, addedUser))
                 .build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(addedUser));
-        when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
-        when(taskRepository.save(task)).thenReturn(updatedTask);
+        when(ticketRepository.findById(TicketId)).thenReturn(Optional.of(Ticket));
+        when(ticketRepository.save(Ticket)).thenReturn(updatedTicket);
 
-        assertEquals(updatedTask, taskService.addUser(taskId, userId));
+        assertEquals(updatedTicket, TicketService.addUser(TicketId, userId));
     }
 
     @Test
     void addUserWithSuccessWithFailedThatUserIsNotProjectMember() {
         //given
         Long userId = 1L;
-        Long taskId = 2L;
+        Long TicketId = 2L;
         Long projectId = 3L;
 
         User creator = User.builder().id(3L).build();
@@ -401,25 +407,25 @@ class TaskServiceImplTest {
                 .members(membersProject)
                 .build();
 
-        List<User> executors = new ArrayList<>();
+        Set<User> executors = new HashSet<>();
         executors.add(creator);
-        Task task = Task.builder()
-                .id(taskId)
+        Ticket Ticket = com.max.backend.entity.Ticket.builder()
+                .id(TicketId)
                 .project(project)
                 .executors(executors)
                 .build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(addedUser));
-        when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
+        when(ticketRepository.findById(TicketId)).thenReturn(Optional.of(Ticket));
 
-        assertThrows(ProjectMemberException.class, () -> taskService.addUser(taskId, userId));
+        assertThrows(ProjectMemberException.class, () -> TicketService.addUser(TicketId, userId));
     }
 
     @Test
-    void addUserWithSuccessWithFailedThatUserIsAlreadyExistInTask() {
+    void addUserWithSuccessWithFailedThatUserIsAlreadyExistInTicket() {
         //given
         Long userId = 1L;
-        Long taskId = 2L;
+        Long TicketId = 2L;
         Long projectId = 3L;
 
         User creator = User.builder().id(3L).build();
@@ -435,26 +441,26 @@ class TaskServiceImplTest {
                 .members(membersProject)
                 .build();
 
-        List<User> executors = new ArrayList<>();
+        Set<User> executors = new HashSet<>();
         executors.add(creator);
         executors.add(addedUser);
-        Task task = Task.builder()
-                .id(taskId)
+        Ticket Ticket = com.max.backend.entity.Ticket.builder()
+                .id(TicketId)
                 .project(project)
                 .executors(executors)
                 .build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(addedUser));
-        when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
+        when(ticketRepository.findById(TicketId)).thenReturn(Optional.of(Ticket));
 
-        assertThrows(TaskException.class, () -> taskService.addUser(taskId, userId));
+        assertThrows(TicketException.class, () -> TicketService.addUser(TicketId, userId));
     }
 
     @Test
     void removeUserWithSuccess() {
         //given
         Long userId = 1L;
-        Long taskId = 2L;
+        Long TicketId = 2L;
         Long projectId = 3L;
 
         User creator = User.builder().id(3L).build();
@@ -470,32 +476,32 @@ class TaskServiceImplTest {
                 .members(membersProject)
                 .build();
 
-        List<User> executors = new ArrayList<>();
+        Set<User> executors = new HashSet<>();
         executors.add(creator);
         executors.add(removedUser);
-        Task task = Task.builder()
-                .id(taskId)
+        Ticket Ticket = com.max.backend.entity.Ticket.builder()
+                .id(TicketId)
                 .project(project)
                 .executors(executors)
                 .build();
 
-        Task updatedTask = Task.builder()
-                .id(taskId)
-                .executors(List.of(creator))
+        Ticket updatedTicket = com.max.backend.entity.Ticket.builder()
+                .id(TicketId)
+                .executors(Set.of(creator))
                 .build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(removedUser));
-        when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
-        when(taskRepository.save(task)).thenReturn(updatedTask);
+        when(ticketRepository.findById(TicketId)).thenReturn(Optional.of(Ticket));
+        when(ticketRepository.save(Ticket)).thenReturn(updatedTicket);
 
-        assertEquals(updatedTask, taskService.removeUser(taskId, userId));
+        assertEquals(updatedTicket, TicketService.removeUser(TicketId, userId));
     }
 
     @Test
-    void removeUserWithFailedThatUserIsNotInTask() {
+    void removeUserWithFailedThatUserIsNotInTicket() {
         //given
         Long userId = 1L;
-        Long taskId = 2L;
+        Long TicketId = 2L;
         Long projectId = 3L;
 
         User creator = User.builder().id(3L).build();
@@ -511,17 +517,17 @@ class TaskServiceImplTest {
                 .members(membersProject)
                 .build();
 
-        List<User> executors = new ArrayList<>();
+        Set<User> executors = new HashSet<>();
         executors.add(creator);
-        Task task = Task.builder()
-                .id(taskId)
+        Ticket ticket = Ticket.builder()
+                .id(TicketId)
                 .project(project)
                 .executors(executors)
                 .build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(removedUser));
-        when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
+        when(ticketRepository.findById(TicketId)).thenReturn(Optional.of(ticket));
 
-        assertThrows(TaskException.class, () -> taskService.removeUser(taskId, userId));
+        assertThrows(TicketException.class, () -> TicketService.removeUser(TicketId, userId));
     }
 }

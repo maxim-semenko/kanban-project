@@ -1,6 +1,6 @@
 import * as types from "./UserActionType"
-import UserService from "../../service/UserService";
-import ProjectService from "../../service/ProjectService";
+import UserService from "../../api/UserService";
+import ProjectService from "../../api/ProjectService";
 
 const gotUsersSuccess = (users) => ({
     type: types.GET_USERS,

@@ -47,7 +47,7 @@ public class ProjectStatus extends BaseEntity {
     @NotNull
     @Min(1)
     @Max(100)
-    private Long limitTotalTask;
+    private Long limitTotalTicket;
 
     @ManyToOne
     @JoinColumn(name = "project_id", referencedColumnName = "id")
@@ -59,6 +59,6 @@ public class ProjectStatus extends BaseEntity {
     @JsonIgnore
     @ToString.Exclude
     @Builder.Default
-    private List<Task> tasks = new ArrayList<>();
+    private List<Ticket> tickets = new ArrayList<>();
 
 }

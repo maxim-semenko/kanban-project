@@ -21,7 +21,7 @@ public class CreateProjectStatusRequest {
     @NotNull
     @Min(1)
     @Max(100)
-    private Long limitTotalTask;
+    private Long limitTotalTicket;
 
     @NotNull
     private Long projectId;

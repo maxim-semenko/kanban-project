@@ -12,7 +12,7 @@ class CreateProjectStatusRequestTest {
     @BeforeEach
     void setUp() {
         createProjectStatusRequest.setName("test");
-        createProjectStatusRequest.setLimitTotalTask(10L);
+        createProjectStatusRequest.setLimitTotalTicket(10L);
         createProjectStatusRequest.setProjectId(1L);
     }
 
@@ -23,7 +23,7 @@ class CreateProjectStatusRequestTest {
 
     @Test
     void getLimitTotalTask() {
-        assertEquals(10L, createProjectStatusRequest.getLimitTotalTask());
+        assertEquals(10L, createProjectStatusRequest.getLimitTotalTicket());
     }
 
     @Test
@@ -39,8 +39,8 @@ class CreateProjectStatusRequestTest {
 
     @Test
     void setLimitTotalTask() {
-        createProjectStatusRequest.setLimitTotalTask(11L);
-        assertEquals(11L, createProjectStatusRequest.getLimitTotalTask());
+        createProjectStatusRequest.setLimitTotalTicket(11L);
+        assertEquals(11L, createProjectStatusRequest.getLimitTotalTicket());
 
     }
 

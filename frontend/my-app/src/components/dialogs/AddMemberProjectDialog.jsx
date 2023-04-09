@@ -16,7 +16,7 @@ import Button from "@mui/material/Button";
 import {alpha, styled} from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import UserService from "../../service/UserService";
+import UserService from "../../api/UserService";
 import Box from "@mui/material/Box";
 import ListItemButton from "@mui/material/ListItemButton";
 import MyAvatar from "../common/MyAvatar";
